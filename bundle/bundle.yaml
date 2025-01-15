@@ -1,0 +1,38 @@
+bundle: kubernetes
+applications:
+  istio-ingressgateway:
+	charm: istio-gateway
+	channel: 1.22/stable
+	scale: 1
+	options:
+  	kind: ingress
+	trust: true
+  istio-pilot:
+	charm: istio-pilot
+	channel: 1.22/stable
+	scale: 1
+	trust: true
+  knative-operator:
+	charm: knative-operator
+	channel: 1.12/stable
+	scale: 1
+	trust: true
+  knative-serving:
+	charm: knative-serving
+	channel: 1.12/stable
+	scale: 1
+	options:
+  	namespace: knative-serving
+	trust: true
+  kserve-controller:
+	charm: kserve-controller
+	channel: 0.13/stable
+	scale: 1
+	trust: true
+relations:
+- - istio-pilot:istio-pilot
+  - istio-ingressgateway:istio-pilot
+- - istio-pilot:gateway-info
+  - kserve-controller:ingress-gateway
+- - kserve-controller:local-gateway
+  - knative-serving:local-gateway
