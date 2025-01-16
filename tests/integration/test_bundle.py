@@ -23,13 +23,13 @@ ISVC = lightkube.generic_resource.create_namespaced_resource(
 )
 # Use the default istio-gateway name
 ISTIO_GATEWAY_NAME = "istio-gateway"
-SKLEARN_INF_SVC_YAML = yaml.safe_load(
+SKLEARN_ISVC_YAML = yaml.safe_load(
     Path("./tests/integration/sklearn-iris.yaml").read_text()
 )
-SKLEARN_INF_SVC_OBJECT = lightkube.codecs.load_all_yaml(
-    yaml.dump(SKLEARN_INF_SVC_YAML)
+SKLEARN_ISVC_OBJECT = lightkube.codecs.load_all_yaml(
+    yaml.dump(SKLEARN_ISVC_YAML)
 )[0]
-SKLEARN_INF_SVC_NAME = SKLEARN_INF_SVC_OBJECT.metadata.name
+SKLEARN_ISVC_NAME = SKLEARN_ISVC_OBJECT.metadata.name
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +84,7 @@ def test_inference_service_serverless_deployment(
         reraise=True,
     )
     def create_inf_svc():
-        lightkube_client.create(SKLEARN_INF_SVC_OBJECT, namespace=serverless_namespace)
+        lightkube_client.create(SKLEARN_ISVC_OBJECT, namespace=serverless_namespace)
 
     # Assert InferenceService state is Available
     @tenacity.retry(
@@ -94,7 +94,7 @@ def test_inference_service_serverless_deployment(
     )
     def assert_inf_svc_state():
         inf_svc = lightkube_client.get(
-            ISVC, SKLEARN_INF_SVC_NAME, namespace=serverless_namespace
+            ISVC, SKLEARN_ISVC_NAME, namespace=serverless_namespace
         )
         conditions = inf_svc.get("status", {}).get("conditions")
         for condition in conditions:
@@ -114,12 +114,12 @@ def test_perfom_inference(ops_test: OpsTest, lightkube_client: lightkube.Client)
     sklearn_iris_input = dict(instances=[[6.8, 2.8, 4.8, 1.4], [6.0, 3.4, 4.5, 1.6]])
     headers = {"Content-Type": "application/json"}
     url = get_isvc_url(
-        isvc_name=SKLEARN_INF_SVC_NAME,
+        isvc_name=SKLEARN_ISVC_NAME,
         isvc_namespace=ops_test.model.name,
         lightkube_client=lightkube_client,
     )
     inference_response = requests.post(
-        f"{url}/v1/models/{SKLEARN_INF_SVC_NAME}:predict",
+        f"{url}/v1/models/{SKLEARN_ISVC_NAME}:predict",
         headers=headers,
         data=json.dumps(sklearn_iris_input),
     ).text
