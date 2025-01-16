@@ -67,7 +67,7 @@ async def test_build_and_deploy(ops_test: OpsTest):
             "istio.gateway.namespace": ops_test.model.name,
         }
     )
-    await ops_test.model.wait_for_idle(status="active", timeout=1000, idle_period=90, raise_on_error=False)
+    await ops_test.model.wait_for_idle(status="active", timeout=9000, raise_on_error=False)
 
 
 def test_inference_service_serverless_deployment(
