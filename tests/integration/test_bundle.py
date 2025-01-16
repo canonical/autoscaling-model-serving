@@ -21,18 +21,23 @@ ISVC = lightkube.generic_resource.create_namespaced_resource(
     verbs=None,
 )
 BUNDLE_PATH = "./bundle/bundle.yaml"
-SKLEARN_INF_SVC_YAML = yaml.safe_load(Path("./tests/integration/sklearn-iris.yaml").read_text())
-SKLEARN_INF_SVC_OBJECT = lightkube.codecs.load_all_yaml(yaml.dump(SKLEARN_INF_SVC_YAML))[0]
+SKLEARN_INF_SVC_YAML = yaml.safe_load(
+    Path("./tests/integration/sklearn-iris.yaml").read_text()
+)
+SKLEARN_INF_SVC_OBJECT = lightkube.codecs.load_all_yaml(
+    yaml.dump(SKLEARN_INF_SVC_YAML)
+)[0]
 SKLEARN_INF_SVC_NAME = SKLEARN_INF_SVC_OBJECT.metadata.name
 
 
-
 logger = logging.getLogger(__name__)
+
 
 @pytest.fixture(scope="session")
 def lightkube_client() -> lightkube.Client:
     client = lightkube.Client(field_manager="autoscaling-bundle")
     return client
+
 
 async def cli_deploy_bundle(ops_test: OpsTest, bundle_path: str):
     """Deploy bundle from charmhub or from file."""
@@ -49,12 +54,18 @@ async def cli_deploy_bundle(ops_test: OpsTest, bundle_path: str):
     assert retcode == 0, f"Deploy failed: {(stderr or stdout).strip()}"
     logger.info(stdout)
 
+
 @pytest.mark.abort_on_fail
 async def test_build_and_deploy(ops_test: OpsTest):
     """Deploy the autoscaling-model-server bundle."""
     await cli_deploy_bundle(ops_test, bundle_path=BUNDLE_PATH)
     # Configure knative-serving with Istio information
-    await ops_test.model.applications["knative-serving"].set_config({"istio.gateway.name": ISTIO_GATEWAY_NAME, "istio.gateway.namespace": ops_test.model.name})
+    await ops_test.model.applications["knative-serving"].set_config(
+        {
+            "istio.gateway.name": ISTIO_GATEWAY_NAME,
+            "istio.gateway.namespace": ops_test.model.name,
+        }
+    )
     await ops_test.model.wait_for_idle(status="active", timeout=1000, idle_period=90)
 
 
@@ -62,9 +73,14 @@ async def test_build_and_deploy(ops_test: OpsTest):
 async def test_build_and_deploy(ops_test: OpsTest):
     """Deploy the autoscaling-model-server bundle."""
     await cli_deploy_bundle(ops_test, bundle_path=BUNDLE_PATH)
-    await ops_test.model.wait_for_idle(status="active", timeout=1000, idle_period=90, raise_on_error=False)
+    await ops_test.model.wait_for_idle(
+        status="active", timeout=1000, idle_period=90, raise_on_error=False
+    )
 
-def test_inference_service_serverless_deployment(ops_test: OpsTest, lightkube_client: lightkube.Client):
+
+def test_inference_service_serverless_deployment(
+    ops_test: OpsTest, lightkube_client: lightkube.Client
+):
     """Create an InferenceService and validate it has a status."""
     # Use the model namespace for deploying the ISVC
     serverless_namespace = ops_test.model.name
@@ -85,7 +101,9 @@ def test_inference_service_serverless_deployment(ops_test: OpsTest, lightkube_cl
         reraise=True,
     )
     def assert_inf_svc_state():
-        inf_svc = lightkube_client.get(ISVC, SKLEARN_INF_SVC_NAME, namespace=serverless_namespace)
+        inf_svc = lightkube_client.get(
+            ISVC, SKLEARN_INF_SVC_NAME, namespace=serverless_namespace
+        )
         conditions = inf_svc.get("status", {}).get("conditions")
         for condition in conditions:
             if condition.get("status") == "False":
@@ -97,21 +115,33 @@ def test_inference_service_serverless_deployment(ops_test: OpsTest, lightkube_cl
     create_inf_svc()
     assert_inf_svc_state()
 
+
 def test_perfom_inference(ops_test: OpsTest, lightkube_client: lightkube.Client):
     """Perform a POST request with data for sklearn-iris ISVC."""
     # This input data is hardcoded based on the example in https://kserve.github.io/website/latest/get_started/first_isvc/
-    sklearn_iris_input = dict(instances = [[6.8, 2.8, 4.8, 1.4],[6.0, 3.4, 4.5, 1.6]])
+    sklearn_iris_input = dict(instances=[[6.8, 2.8, 4.8, 1.4], [6.0, 3.4, 4.5, 1.6]])
     headers = {"Content-Type": "application/json"}
-    url = get_isvc_url(isvc_name=SKLEARN_INF_SVC_NAME, isvc_namespace=ops_test.model.name, lightkube_client=lightkube_client)
-    inference_response = requests.post(f"{url}/v1/models/{SKLEARN_INF_SVC_NAME}:predict", headers=headers, data=json.dumps(sklearn_iris_input)).text
+    url = get_isvc_url(
+        isvc_name=SKLEARN_INF_SVC_NAME,
+        isvc_namespace=ops_test.model.name,
+        lightkube_client=lightkube_client,
+    )
+    inference_response = requests.post(
+        f"{url}/v1/models/{SKLEARN_INF_SVC_NAME}:predict",
+        headers=headers,
+        data=json.dumps(sklearn_iris_input),
+    ).text
     assert inference_response == '{"predictions":[1,1]}'
+
 
 @tenacity.retry(
     wait=tenacity.wait_exponential(multiplier=1, min=1, max=15),
     stop=tenacity.stop_after_attempt(30),
     reraise=True,
 )
-def get_isvc_url(isvc_name: str, isvc_namespace: str, lightkube_client: lightkube.Client) -> str:
+def get_isvc_url(
+    isvc_name: str, isvc_namespace: str, lightkube_client: lightkube.Client
+) -> str:
     """Return the ISVC url gotten from an existing ISVC in the Kubernetes deployment."""
     isvc_object = lightkube_client.get(ISVC, isvc_name, namespace=isvc_namespace)
     return isvc_object.get("status")["components"]["predictor"]["url"]
