@@ -1,0 +1,5 @@
+aiohttp
+lightkube
+pyyaml
+requests
+tenacity
