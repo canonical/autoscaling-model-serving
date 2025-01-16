@@ -13,6 +13,7 @@ import tenacity
 import yaml
 from pytest_operator.plugin import OpsTest
 
+BUNDLE_PATH = "./bundle/bundle.yaml"
 ISVC = lightkube.generic_resource.create_namespaced_resource(
     group="serving.kserve.io",
     version="v1beta1",
@@ -20,7 +21,8 @@ ISVC = lightkube.generic_resource.create_namespaced_resource(
     plural="inferenceservices",
     verbs=None,
 )
-BUNDLE_PATH = "./bundle/bundle.yaml"
+# Use the default istio-gateway name
+ISTIO_GATEWAY_NAME = "istio-gateway"
 SKLEARN_INF_SVC_YAML = yaml.safe_load(
     Path("./tests/integration/sklearn-iris.yaml").read_text()
 )
@@ -28,7 +30,6 @@ SKLEARN_INF_SVC_OBJECT = lightkube.codecs.load_all_yaml(
     yaml.dump(SKLEARN_INF_SVC_YAML)
 )[0]
 SKLEARN_INF_SVC_NAME = SKLEARN_INF_SVC_OBJECT.metadata.name
-
 
 logger = logging.getLogger(__name__)
 
@@ -66,16 +67,7 @@ async def test_build_and_deploy(ops_test: OpsTest):
             "istio.gateway.namespace": ops_test.model.name,
         }
     )
-    await ops_test.model.wait_for_idle(status="active", timeout=1000, idle_period=90)
-
-
-@pytest.mark.abort_on_fail
-async def test_build_and_deploy(ops_test: OpsTest):
-    """Deploy the autoscaling-model-server bundle."""
-    await cli_deploy_bundle(ops_test, bundle_path=BUNDLE_PATH)
-    await ops_test.model.wait_for_idle(
-        status="active", timeout=1000, idle_period=90, raise_on_error=False
-    )
+    await ops_test.model.wait_for_idle(status="active", timeout=1000, idle_period=90, raise_on_error=False)
 
 
 def test_inference_service_serverless_deployment(
