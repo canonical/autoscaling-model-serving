@@ -9,8 +9,11 @@ jobs:
     name: Bundle integration tests
     runs-on: ubuntu-20.04
     steps:
+      - name: Maximise GH runner space
+        uses: jlumbroso/free-disk-space@v1.3.1
+
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup operator environment
         uses: charmed-kubernetes/actions-operator@main
