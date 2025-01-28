@@ -19,8 +19,7 @@ juju deploy autoscaling-model-server --trust
 
 # Configure knative-serving with Istio information
 # Name of the Istio ingress gateway
-juju config knative-serving istio.gateway.name="<name of the Istio ingress gateway>"
-juju config istio-pilot default-gateway
+juju config knative-serving istio.gateway.name=$(juju config istio-pilot default-gateway)
 
 # Namespace of the Istio ingress gateway
 # This value is the model name where the autoscaling-model-server bundle was deployed

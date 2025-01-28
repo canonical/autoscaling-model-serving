@@ -1,10 +1,10 @@
-import asyncio
+# Copyright 2025 Canonical Ltd.
+# See LICENSE file for licensing details.
+
 import json
 import logging
-
 from pathlib import Path
 
-import aiohttp
 import lightkube
 import lightkube.codecs
 import pytest
@@ -23,12 +23,8 @@ ISVC = lightkube.generic_resource.create_namespaced_resource(
 )
 # Use the default istio-gateway name
 ISTIO_GATEWAY_NAME = "istio-gateway"
-SKLEARN_ISVC_YAML = yaml.safe_load(
-    Path("./tests/integration/sklearn-iris.yaml").read_text()
-)
-SKLEARN_ISVC_OBJECT = lightkube.codecs.load_all_yaml(
-    yaml.dump(SKLEARN_ISVC_YAML)
-)[0]
+SKLEARN_ISVC_YAML = yaml.safe_load(Path("./tests/integration/sklearn-iris.yaml").read_text())
+SKLEARN_ISVC_OBJECT = lightkube.codecs.load_all_yaml(yaml.dump(SKLEARN_ISVC_YAML))[0]  # noqa
 SKLEARN_ISVC_NAME = SKLEARN_ISVC_OBJECT.metadata.name
 
 logger = logging.getLogger(__name__)
@@ -92,10 +88,8 @@ def test_inference_service_serverless_deployment(
         stop=tenacity.stop_after_attempt(30),
         reraise=True,
     )
-    def assert_inf_svc_state():
-        inf_svc = lightkube_client.get(
-            ISVC, SKLEARN_ISVC_NAME, namespace=serverless_namespace
-        )
+    def assert_isvc_state():
+        inf_svc = lightkube_client.get(ISVC, SKLEARN_ISVC_NAME, namespace=serverless_namespace)
         conditions = inf_svc.get("status", {}).get("conditions")
         for condition in conditions:
             if condition.get("status") == "False":
@@ -105,12 +99,13 @@ def test_inference_service_serverless_deployment(
         assert status_overall is True
 
     create_inf_svc()
-    assert_inf_svc_state()
+    assert_isvc_state()
 
 
 def test_perfom_inference(ops_test: OpsTest, lightkube_client: lightkube.Client):
     """Perform a POST request with data for sklearn-iris ISVC."""
-    # This input data is hardcoded based on the example in https://kserve.github.io/website/latest/get_started/first_isvc/
+    # This input data is hardcoded based on
+    # the example in https://kserve.github.io/website/latest/get_started/first_isvc/
     sklearn_iris_input = dict(instances=[[6.8, 2.8, 4.8, 1.4], [6.0, 3.4, 4.5, 1.6]])
     headers = {"Content-Type": "application/json"}
     url = get_isvc_url(
@@ -131,9 +126,7 @@ def test_perfom_inference(ops_test: OpsTest, lightkube_client: lightkube.Client)
     stop=tenacity.stop_after_attempt(30),
     reraise=True,
 )
-def get_isvc_url(
-    isvc_name: str, isvc_namespace: str, lightkube_client: lightkube.Client
-) -> str:
-    """Return the ISVC url gotten from an existing ISVC in the Kubernetes deployment."""
+def get_isvc_url(isvc_name: str, isvc_namespace: str, lightkube_client: lightkube.Client) -> str:
+    """Return the ISVC url from an existing ISVC in the K8s deployment."""
     isvc_object = lightkube_client.get(ISVC, isvc_name, namespace=isvc_namespace)
     return isvc_object.get("status")["components"]["predictor"]["url"]

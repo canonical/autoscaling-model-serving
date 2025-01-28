@@ -5,6 +5,14 @@ on:
   workflow_call:
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install tox
+      - run: tox -e lint
+
   bundle-test:
     name: Bundle integration tests
     runs-on: ubuntu-20.04
