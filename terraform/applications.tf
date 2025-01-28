@@ -28,7 +28,7 @@ module "knative_serving" {
   model_name = var.model_name
   config = {
     "istio.gateway.namespace" = var.model_name,
-    "istio.gateway.name"      = var.default_gateway,
+    "istio.gateway.name"      = var.istio_default_gateway,
     namespace                 = "knative-serving",
   }
   revision = var.knative_serving_revision
