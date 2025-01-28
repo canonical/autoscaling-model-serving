@@ -1,5 +1,5 @@
 module "istio_ingressgateway" {
-  source     = "git::https://github.com/canonical/istio-operators/charms/istio-gateway//terraform?ref=track/1.22"
+  source     = "git::https://github.com/canonical/istio-operators//charms/istio-gateway/terraform?ref=track/1.22"
   model_name = var.model_name
   app_name   = "istio-ingressgateway"
   config = {
@@ -9,7 +9,7 @@ module "istio_ingressgateway" {
 }
 
 module "istio_pilot" {
-  source     = "git::https://github.com/canonical/istio-operators/charms/istio-pilot//terraform?ref=track/1.22"
+  source     = "git::https://github.com/canonical/istio-operators//charms/istio-pilot/terraform?ref=track/1.22"
   model_name = var.model_name
   config = {
     default-gateway = var.default_gateway,
@@ -18,13 +18,13 @@ module "istio_pilot" {
 }
 
 module "knative_operator" {
-  source     = "git::https://github.com/canonical/knative-operators/charms/knative-operator//terraform?ref=track/1.12"
+  source     = "git::https://github.com/canonical/knative-operators//charms/knative-operator//terraform?ref=track/1.12"
   model_name = var.model_name
   revision   = var.knative_operator_revision
 }
 
 module "knative_serving" {
-  source     = "git::https://github.com/canonical/knative-operators/charms/knative-serving//terraform?ref=track/1.12"
+  source     = "git::https://github.com/canonical/knative-operators//charms/knative-serving//terraform?ref=track/1.12"
   model_name = var.model_name
   config = {
     "istio.gateway.namespace" = var.model_name,
@@ -35,7 +35,7 @@ module "knative_serving" {
 }
 
 module "kserve_controller" {
-  source     = "git::https://github.com/canonical/kserve-operators/charms/kserve-controller//terraform?ref=track/0.13"
+  source     = "git::https://github.com/canonical/kserve-operators//charms/kserve-controller//terraform?ref=track/0.13"
   model_name = var.model_name
   config = {
     deployment-mode = "serverless",
