@@ -22,6 +22,12 @@ variable "grafana_agent_k8s_revision" {
   default     = null
 }
 
+variable "istio_default_gateway" {
+  description = "istio-pilot default-gateway configuration"
+  type        = string
+  default     = null
+}
+
 variable "istio_ingressgateway_revision" {
   description = "Charm revision for istio-ingressgateway"
   type        = number
@@ -55,4 +61,5 @@ variable "kserve_controller_revision" {
 variable "model_name" {
   description = "Model name"
   type        = string
+  default     = null
 }

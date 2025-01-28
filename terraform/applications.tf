@@ -12,7 +12,7 @@ module "istio_pilot" {
   source     = "git::https://github.com/canonical/istio-operators//charms/istio-pilot/terraform?ref=track/1.22"
   model_name = var.model_name
   config = {
-    default-gateway = var.default_gateway,
+    default-gateway = var.istio_default_gateway,
   }
   revision = var.istio_pilot_revision
 }
