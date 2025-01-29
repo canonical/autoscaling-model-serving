@@ -3,7 +3,7 @@
 package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.8.1"
 
 # Testing tools configuration
 [tool.coverage.run]
@@ -41,7 +41,7 @@ lint.per-file-ignores = {"tests/*" = ["D100","D101","D102","D103","D104"]}
 max-complexity = 10
 
 [tool.codespell]
-skip = "build,lib,venv,icon.svg,.tox,.git,.mypy_cache,.ruff_cache,.coverage"
+skip = "build,lib,venv,icon.svg,.tox,.git,.mypy_cache,.ruff_cache,.coverage,.lock"
 ignore-words-list = "NotIn"
 
 # LSPs and formatters

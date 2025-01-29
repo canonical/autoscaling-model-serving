@@ -106,7 +106,7 @@ def test_perfom_inference(ops_test: OpsTest, lightkube_client: lightkube.Client)
     """Perform a POST request with data for sklearn-iris ISVC."""
     # This input data is hardcoded based on
     # the example in https://kserve.github.io/website/latest/get_started/first_isvc/
-    sklearn_iris_input = dict(instances=[[6.8, 2.8, 4.8, 1.4], [6.0, 3.4, 4.5, 1.6]])
+    sklearn_iris_input = {"instances": [[6.8, 2.8, 4.8, 1.4], [6.0, 3.4, 4.5, 1.6]]}
     headers = {"Content-Type": "application/json"}
     url = get_isvc_url(
         isvc_name=SKLEARN_ISVC_NAME,
