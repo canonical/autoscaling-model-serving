@@ -1,3 +1,6 @@
+# This module is not exposing the storage directives input, thus it
+# cannot be set in this solution's module. See for reference:
+# https://github.com/canonical/autoscaling-model-server/issues/6
 module "grafana_agent_k8s" {
   count = var.cos_configuration && var.existing_grafana_agent_name == null ? 1 : 0
   # tflint-ignore: terraform_module_pinned_source
