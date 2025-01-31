@@ -4,7 +4,6 @@ module "grafana_agent_k8s" {
   app_name    = "grafana-agent"
   model_name  = var.create_model ? juju_model.as_model_server[0].name : local.model
   revision    = var.grafana_agent_k8s_revision
-  constraints = var.grafana_agent_k8s_disk_size
 }
 
 resource "juju_integration" "istio_ingressgateway_grafana_agent_k8s_metrics_endpoint" {

@@ -16,12 +16,6 @@ variable "existing_grafana_agent_name" {
   default     = null
 }
 
-variable "grafana_agent_k8s_disk_size" {
-  description = "Grafana agent root-disk size for database storage"
-  type        = string
-  default     = "root-disk=10G"
-}
-
 variable "grafana_agent_k8s_revision" {
   description = "Charm revision for grafana-agent-k8s"
   type        = number
