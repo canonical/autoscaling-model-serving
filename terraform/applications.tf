@@ -20,7 +20,7 @@ module "istio_pilot" {
 module "knative_operator" {
   source     = "git::https://github.com/canonical/knative-operators//charms/knative-operator//terraform?ref=track/1.12"
   model_name = var.create_model ? juju_model.as_model_server[0].name : local.model
-  revision = var.knative_operator_revision
+  revision   = var.knative_operator_revision
 }
 
 module "knative_serving" {
