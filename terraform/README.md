@@ -15,7 +15,7 @@ The solution module offers the following configurable inputs:
 | `create_model`| bool | Whether to create a model or re-use one created in a higher level module | False |
 | `existing_grafana_agent_name`| string | Name of an existing grafana-agent-k8s deployment | False |
 | `grafana_agent_k8s_size`| string | Grafana agent database storage size | False |
-| `default_gateway`| string | Name of the Istio default ingress gateway | False |
+| `istio_default_gateway`| string | Name of the Istio default ingress gateway | False |
 
 ### Outputs
 Upon applied, the solution module exports the following outputs:

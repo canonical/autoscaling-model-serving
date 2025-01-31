@@ -10,12 +10,6 @@ variable "create_model" {
   default     = true
 }
 
-variable "default_gateway" {
-  description = "Name of the Istio default ingress gateway"
-  type        = string
-  default     = "as-model-server"
-}
-
 variable "existing_grafana_agent_name" {
   description = "Name of an existing grafana-agent-k8s deployment"
   type        = string
