@@ -1,6 +1,7 @@
+# tflint-ignore: terraform_module_pinned_source
 module "grafana_agent_k8s" {
   count      = var.cos_configuration && var.existing_grafana_agent_name == null ? 1 : 0
-  source     = "git::https://github.com/canonical/grafana-agent-k8s-operator//terraform?ref=main"
+  source     = "git::https://github.com/canonical/grafana-agent-k8s-operator//terraform"
   app_name   = "grafana-agent"
   model_name = var.create_model ? juju_model.as_model_server[0].name : local.model
   revision   = var.grafana_agent_k8s_revision
