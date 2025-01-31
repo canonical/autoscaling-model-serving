@@ -3,13 +3,13 @@ module "grafana_agent_k8s" {
   # tflint-ignore: terraform_module_pinned_source
   source     = "git::https://github.com/canonical/grafana-agent-k8s-operator//terraform"
   app_name   = "grafana-agent"
-  model_name = var.create_model ? juju_model.as_model_server[0].name : local.model
+  model_name = var.create_model ? juju_model.as_model_server[0].name : var.model
   revision   = var.grafana_agent_k8s_revision
 }
 
 resource "juju_integration" "istio_ingressgateway_grafana_agent_k8s_metrics_endpoint" {
   count = var.cos_configuration ? 1 : 0
-  model = var.create_model ? juju_model.as_model_server[0].name : local.model
+  model = var.create_model ? juju_model.as_model_server[0].name : var.model
 
   application {
     name     = module.istio_ingressgateway.app_name
@@ -24,7 +24,7 @@ resource "juju_integration" "istio_ingressgateway_grafana_agent_k8s_metrics_endp
 
 resource "juju_integration" "istio_pilot_grafana_agent_k8s_grafana_dashboard" {
   count = var.cos_configuration ? 1 : 0
-  model = var.create_model ? juju_model.as_model_server[0].name : local.model
+  model = var.create_model ? juju_model.as_model_server[0].name : var.model
 
   application {
     name     = module.istio_pilot.app_name
@@ -39,7 +39,7 @@ resource "juju_integration" "istio_pilot_grafana_agent_k8s_grafana_dashboard" {
 
 resource "juju_integration" "istio_pilot_grafana_agent_k8s_metrics_endpoint" {
   count = var.cos_configuration ? 1 : 0
-  model = var.create_model ? juju_model.as_model_server[0].name : local.model
+  model = var.create_model ? juju_model.as_model_server[0].name : var.model
 
   application {
     name     = module.istio_pilot.app_name
@@ -54,7 +54,7 @@ resource "juju_integration" "istio_pilot_grafana_agent_k8s_metrics_endpoint" {
 
 resource "juju_integration" "knative_serving_knative_operator_otel_collector" {
   count = var.cos_configuration ? 1 : 0
-  model = var.create_model ? juju_model.as_model_server[0].name : local.model
+  model = var.create_model ? juju_model.as_model_server[0].name : var.model
 
   application {
     name     = module.knative_serving.app_name
@@ -69,7 +69,7 @@ resource "juju_integration" "knative_serving_knative_operator_otel_collector" {
 
 resource "juju_integration" "knative_operator_grafana_agent_k8s_metrics_endpoint" {
   count = var.cos_configuration ? 1 : 0
-  model = var.create_model ? juju_model.as_model_server[0].name : local.model
+  model = var.create_model ? juju_model.as_model_server[0].name : var.model
 
   application {
     name     = module.knative_operator.app_name
@@ -84,7 +84,7 @@ resource "juju_integration" "knative_operator_grafana_agent_k8s_metrics_endpoint
 
 resource "juju_integration" "knative_operator_grafana_agent_k8s_grafana_logging" {
   count = var.cos_configuration ? 1 : 0
-  model = var.create_model ? juju_model.as_model_server[0].name : local.model
+  model = var.create_model ? juju_model.as_model_server[0].name : var.model
 
   application {
     name     = module.knative_operator.app_name
@@ -99,7 +99,7 @@ resource "juju_integration" "knative_operator_grafana_agent_k8s_grafana_logging"
 
 resource "juju_integration" "kserve_controller_grafana_agent_k8s_metrics_endpoint" {
   count = var.cos_configuration ? 1 : 0
-  model = var.create_model ? juju_model.as_model_server[0].name : local.model
+  model = var.create_model ? juju_model.as_model_server[0].name : var.model
 
   application {
     name     = module.kserve_controller.app_name
@@ -114,7 +114,7 @@ resource "juju_integration" "kserve_controller_grafana_agent_k8s_metrics_endpoin
 
 resource "juju_integration" "kserve_controller_grafana_agent_k8s_grafana_logging" {
   count = var.cos_configuration ? 1 : 0
-  model = var.create_model ? juju_model.as_model_server[0].name : local.model
+  model = var.create_model ? juju_model.as_model_server[0].name : var.model
 
   application {
     name     = module.kserve_controller.app_name

@@ -1,6 +1,6 @@
 module "istio_ingressgateway" {
   source     = "git::https://github.com/canonical/istio-operators//charms/istio-gateway/terraform?ref=track/1.22"
-  model_name = var.create_model ? juju_model.as_model_server[0].name : local.model
+  model_name = var.create_model ? juju_model.as_model_server[0].name : var.model
   app_name   = "istio-ingressgateway"
   config = {
     kind = "ingress",
@@ -10,7 +10,7 @@ module "istio_ingressgateway" {
 
 module "istio_pilot" {
   source     = "git::https://github.com/canonical/istio-operators//charms/istio-pilot/terraform?ref=track/1.22"
-  model_name = var.create_model ? juju_model.as_model_server[0].name : local.model
+  model_name = var.create_model ? juju_model.as_model_server[0].name : var.model
   config = {
     default-gateway = var.istio_default_gateway,
   }
@@ -19,15 +19,15 @@ module "istio_pilot" {
 
 module "knative_operator" {
   source     = "git::https://github.com/canonical/knative-operators//charms/knative-operator//terraform?ref=track/1.12"
-  model_name = var.create_model ? juju_model.as_model_server[0].name : local.model
+  model_name = var.create_model ? juju_model.as_model_server[0].name : var.model
   revision   = var.knative_operator_revision
 }
 
 module "knative_serving" {
   source     = "git::https://github.com/canonical/knative-operators//charms/knative-serving//terraform?ref=track/1.12"
-  model_name = var.create_model ? juju_model.as_model_server[0].name : local.model
+  model_name = var.create_model ? juju_model.as_model_server[0].name : var.model
   config = {
-    "istio.gateway.namespace" = var.create_model ? juju_model.as_model_server[0].name : local.model,
+    "istio.gateway.namespace" = var.create_model ? juju_model.as_model_server[0].name : var.model,
     "istio.gateway.name"      = var.istio_default_gateway,
     namespace                 = "knative-serving",
   }
@@ -36,7 +36,7 @@ module "knative_serving" {
 
 module "kserve_controller" {
   source     = "git::https://github.com/canonical/kserve-operators//charms/kserve-controller//terraform?ref=track/0.13"
-  model_name = var.create_model ? juju_model.as_model_server[0].name : local.model
+  model_name = var.create_model ? juju_model.as_model_server[0].name : var.model
   config = {
     deployment-mode = "serverless",
   }
