@@ -4,16 +4,28 @@ variable "cos_configuration" {
   default     = false
 }
 
+variable "create_model" {
+  description = "Whether to create a model or re-use one created in a higher level module"
+  type        = bool
+  default     = true
+}
+
+variable "default_gateway" {
+  description = "Name of the Istio default ingress gateway"
+  type        = string
+  default     = "as-model-server"
+}
+
 variable "existing_grafana_agent_name" {
   description = "Name of an existing grafana-agent-k8s deployment"
   type        = string
   default     = null
 }
 
-variable "grafana_agent_k8s_size" {
-  description = "Grafana agent database storage size"
+variable "grafana_agent_k8s_disk_size" {
+  description = "Grafana agent root-disk size for database storage"
   type        = string
-  default     = "10G"
+  default     = "root-disk=10G"
 }
 
 variable "grafana_agent_k8s_revision" {
@@ -55,11 +67,5 @@ variable "knative_serving_revision" {
 variable "kserve_controller_revision" {
   description = "Charm revision for kserve-controller"
   type        = number
-  default     = null
-}
-
-variable "model_name" {
-  description = "Model name"
-  type        = string
   default     = null
 }

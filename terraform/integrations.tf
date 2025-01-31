@@ -1,5 +1,5 @@
 resource "juju_integration" "istio_pilot_istio_ingressgateway_istio_pilot" {
-  model = var.model_name
+  model = var.create_model ? juju_model.as_model_server[0].name : local.model
 
   application {
     name     = module.istio_pilot.app_name
@@ -13,7 +13,7 @@ resource "juju_integration" "istio_pilot_istio_ingressgateway_istio_pilot" {
 }
 
 resource "juju_integration" "istio_pilot_kserve_controller_gateway_info" {
-  model = var.model_name
+  model = var.create_model ? juju_model.as_model_server[0].name : local.model
 
   application {
     name     = module.istio_pilot.app_name
@@ -27,7 +27,7 @@ resource "juju_integration" "istio_pilot_kserve_controller_gateway_info" {
 }
 
 resource "juju_integration" "kserve_controller_knative_serving_local_gateway" {
-  model = var.model_name
+  model = var.create_model ? juju_model.as_model_server[0].name : local.model
 
   application {
     name     = module.kserve_controller.app_name
