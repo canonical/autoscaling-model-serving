@@ -84,7 +84,7 @@ resource "juju_integration" "knative_operator_grafana_agent_k8s_metrics_endpoint
 
 resource "juju_integration" "knative_operator_grafana_agent_k8s_grafana_logging" {
   count = var.cos_configuration ? 1 : 0
-  model = var.model_name
+  model = var.create_model ? juju_model.as_model_server[0].name : local.model
 
   application {
     name     = module.knative_operator.app_name
@@ -99,7 +99,7 @@ resource "juju_integration" "knative_operator_grafana_agent_k8s_grafana_logging"
 
 resource "juju_integration" "kserve_controller_grafana_agent_k8s_metrics_endpoint" {
   count = var.cos_configuration ? 1 : 0
-  model = var.model_name
+  model = var.create_model ? juju_model.as_model_server[0].name : local.model
 
   application {
     name     = module.kserve_controller.app_name
@@ -114,7 +114,7 @@ resource "juju_integration" "kserve_controller_grafana_agent_k8s_metrics_endpoin
 
 resource "juju_integration" "kserve_controller_grafana_agent_k8s_grafana_logging" {
   count = var.cos_configuration ? 1 : 0
-  model = var.model_name
+  model = var.create_model ? juju_model.as_model_server[0].name : local.model
 
   application {
     name     = module.kserve_controller.app_name
