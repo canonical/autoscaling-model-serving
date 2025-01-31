@@ -5,7 +5,7 @@ variable "cos_configuration" {
 }
 
 variable "create_model" {
-  description = "Whether to create a model or re-use one created in a higher level module"
+  description = "Whether to create a model or reuse one created in a higher level module"
   type        = bool
   default     = true
 }
