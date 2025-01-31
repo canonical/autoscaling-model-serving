@@ -77,7 +77,7 @@ resource "juju_integration" "knative_operator_grafana_agent_k8s_metrics_endpoint
   }
 
   application {
-    name     = var.existing_grafana_agent_name == null ? juju_application.grafana_agent_k8s[count.index].name : var.existing_grafana_agent_name
+    name     = var.existing_grafana_agent_name == null ? module.grafana_agent_k8s[count.index].name : var.existing_grafana_agent_name
     endpoint = "metrics-endpoint"
   }
 }
