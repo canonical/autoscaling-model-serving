@@ -25,7 +25,7 @@ variable "grafana_agent_k8s_revision" {
 variable "istio_default_gateway" {
   description = "istio-pilot default-gateway configuration"
   type        = string
-  default     = null
+  default     = "istio-gateway"
 }
 
 variable "istio_ingressgateway_revision" {
