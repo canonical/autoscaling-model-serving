@@ -23,6 +23,7 @@ applications:
     scale: 1
     options:
       namespace: knative-serving
+      istio.gateway.name: istio-gateway
     trust: true
   kserve-controller:
     charm: kserve-controller
