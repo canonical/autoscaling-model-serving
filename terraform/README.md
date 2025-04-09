@@ -1,7 +1,7 @@
-# Autoscaling model server Terraform solution
+# Autoscaling model serving Terraform solution
 
 
-This is a Terraform module facilitating the deployment of the Autoscaling model server solution, using the [Terraform juju provider](https://github.com/juju/terraform-provider-juju/). For more information, refer to the provider [documentation](https://registry.terraform.io/providers/juju/juju/latest/docs). 
+This is a Terraform module facilitating the deployment of the Autoscaling model serving solution, using the [Terraform juju provider](https://github.com/juju/terraform-provider-juju/). For more information, refer to the provider [documentation](https://registry.terraform.io/providers/juju/juju/latest/docs). 
 
 ## API
 
