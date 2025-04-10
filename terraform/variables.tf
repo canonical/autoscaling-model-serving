@@ -61,5 +61,5 @@ variable "kserve_controller_revision" {
 variable "model" {
   description = "Model name"
   type        = string
-  default     = "as-model-server"
+  default     = "as-model-serving"
 }

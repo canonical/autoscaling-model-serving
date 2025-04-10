@@ -54,7 +54,7 @@ async def cli_deploy_bundle(ops_test: OpsTest, bundle_path: str):
 
 @pytest.mark.abort_on_fail
 async def test_build_and_deploy(ops_test: OpsTest):
-    """Deploy the autoscaling-model-server bundle."""
+    """Deploy the autoscaling-model-serving bundle."""
     await cli_deploy_bundle(ops_test, bundle_path=BUNDLE_PATH)
     # Configure knative-serving with Istio information
     await ops_test.model.applications["knative-serving"].set_config(
