@@ -22,6 +22,12 @@ variable "grafana_agent_k8s_revision" {
   default     = null
 }
 
+variable "grafana_agent_k8s_size" {
+  description = "Grafana agent database storage size"
+  type        = string
+  default     = "10G"
+}
+
 variable "istio_default_gateway" {
   description = "istio-pilot default-gateway configuration"
   type        = string
