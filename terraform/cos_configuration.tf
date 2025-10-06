@@ -1,13 +1,21 @@
 # This module is not exposing the storage directives input, thus it
 # cannot be set in this solution's module. See for reference:
 # https://github.com/canonical/autoscaling-model-serving/issues/6
-module "grafana_agent_k8s" {
+resource "juju_application" "grafana_agent_k8s" {
   count = var.cos_configuration && var.existing_grafana_agent_name == null ? 1 : 0
-  # tflint-ignore: terraform_module_pinned_source
-  source     = "git::https://github.com/canonical/grafana-agent-k8s-operator//terraform"
-  app_name   = "grafana-agent"
-  model_name = var.create_model ? juju_model.as_model_server[0].name : var.model
-  revision   = var.grafana_agent_k8s_revision
+
+  charm {
+    name     = "grafana-agent-k8s"
+    channel  = "1/stable"
+    revision = var.grafana_agent_k8s_revision
+  }
+  model = var.create_model ? juju_model.as_model_server[0].name : var.model
+  name  = "grafana-agent-k8s-kubeflow"
+  storage_directives = {
+    data = var.grafana_agent_k8s_size
+  }
+  trust = true
+  units = 1
 }
 
 resource "juju_integration" "istio_ingressgateway_grafana_agent_k8s_metrics_endpoint" {
@@ -20,7 +28,7 @@ resource "juju_integration" "istio_ingressgateway_grafana_agent_k8s_metrics_endp
   }
 
   application {
-    name     = var.existing_grafana_agent_name == null ? module.grafana_agent_k8s[count.index].name : var.existing_grafana_agent_name
+    name     = var.existing_grafana_agent_name == null ? juju_application.grafana_agent_k8s[count.index].name : var.existing_grafana_agent_name
     endpoint = "metrics-endpoint"
   }
 }
@@ -35,7 +43,7 @@ resource "juju_integration" "istio_pilot_grafana_agent_k8s_grafana_dashboard" {
   }
 
   application {
-    name     = var.existing_grafana_agent_name == null ? module.grafana_agent_k8s[count.index].name : var.existing_grafana_agent_name
+    name     = var.existing_grafana_agent_name == null ? juju_application.grafana_agent_k8s[count.index].name : var.existing_grafana_agent_name
     endpoint = "grafana-dashboards-consumer"
   }
 }
@@ -50,7 +58,7 @@ resource "juju_integration" "istio_pilot_grafana_agent_k8s_metrics_endpoint" {
   }
 
   application {
-    name     = var.existing_grafana_agent_name == null ? module.grafana_agent_k8s[count.index].name : var.existing_grafana_agent_name
+    name     = var.existing_grafana_agent_name == null ? juju_application.grafana_agent_k8s[count.index].name : var.existing_grafana_agent_name
     endpoint = "metrics-endpoint"
   }
 }
@@ -80,7 +88,7 @@ resource "juju_integration" "knative_operator_grafana_agent_k8s_metrics_endpoint
   }
 
   application {
-    name     = var.existing_grafana_agent_name == null ? module.grafana_agent_k8s[count.index].name : var.existing_grafana_agent_name
+    name     = var.existing_grafana_agent_name == null ? juju_application.grafana_agent_k8s[count.index].name : var.existing_grafana_agent_name
     endpoint = "metrics-endpoint"
   }
 }
@@ -95,7 +103,7 @@ resource "juju_integration" "knative_operator_grafana_agent_k8s_grafana_logging"
   }
 
   application {
-    name     = var.existing_grafana_agent_name == null ? module.grafana_agent_k8s[count.index].name : var.existing_grafana_agent_name
+    name     = var.existing_grafana_agent_name == null ? juju_application.grafana_agent_k8s[count.index].name : var.existing_grafana_agent_name
     endpoint = "logging-provider"
   }
 }
@@ -110,7 +118,7 @@ resource "juju_integration" "kserve_controller_grafana_agent_k8s_metrics_endpoin
   }
 
   application {
-    name     = var.existing_grafana_agent_name == null ? module.grafana_agent_k8s[count.index].name : var.existing_grafana_agent_name
+    name     = var.existing_grafana_agent_name == null ? juju_application.grafana_agent_k8s[count.index].name : var.existing_grafana_agent_name
     endpoint = "metrics-endpoint"
   }
 }
@@ -125,7 +133,7 @@ resource "juju_integration" "kserve_controller_grafana_agent_k8s_grafana_logging
   }
 
   application {
-    name     = var.existing_grafana_agent_name == null ? module.grafana_agent_k8s[count.index].name : var.existing_grafana_agent_name
+    name     = var.existing_grafana_agent_name == null ? juju_application.grafana_agent_k8s[count.index].name : var.existing_grafana_agent_name
     endpoint = "logging-provider"
   }
 }
