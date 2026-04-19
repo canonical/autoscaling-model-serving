@@ -38,11 +38,11 @@ module "knative_serving" {
 }
 
 module "kserve_controller" {
-  source     = "git::https://github.com/canonical/kserve-operators//charms/kserve-controller//terraform?ref=track/0.17"
+  source     = "git::https://github.com/canonical/kserve-operators//charms/kserve-controller//terraform?ref=track/main"
   model_name = var.create_model ? juju_model.as_model_server[0].name : var.model
   config     = {
     deployment-mode = "knative",
   }
   revision   = var.kserve_controller_revision
-  channel    = "0.17/${var.risk}"
+  channel    = "latest/${var.risk}"
 }
