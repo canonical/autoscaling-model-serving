@@ -38,7 +38,7 @@ module "knative_serving" {
 }
 
 module "kserve_controller" {
-  source     = "git::https://github.com/canonical/kserve-operators//charms/kserve-controller//terraform?ref=track/main"
+  source     = "git::https://github.com/canonical/kserve-operators//charms/kserve-controller//terraform?ref=main"
   model_name = var.create_model ? juju_model.as_model_server[0].name : var.model
   config     = {
     deployment-mode = "knative",
