@@ -4,6 +4,7 @@
 import json
 import logging
 import subprocess
+from os import chdir
 from pathlib import Path
 
 import lightkube
@@ -39,7 +40,8 @@ def lightkube_client() -> lightkube.Client:
 @pytest.mark.abort_on_fail
 async def test_terraform_solution_deployment():
     """Deploy the whole Terraform solution."""
-    subprocess.run(["terraform", "init"], check=True)
+    chdir("../terraform")
+    subprocess.run(["cd", "terraform", "&&", "terraform", "init"], check=True)
     subprocess.run(["terraform", "apply", "-auto-approve"], check=True)
 
 
