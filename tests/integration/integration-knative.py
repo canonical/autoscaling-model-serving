@@ -100,15 +100,15 @@ def test_inference_service_deployment(ops_test: OpsTest, lightkube_client: light
         reraise=True,
     )
     def assert_isvc_state():
-        status_overall = False
         inf_svc = lightkube_client.get(ISVC, SKLEARN_ISVC_NAME, namespace=isvc_namespace)
         conditions = inf_svc.get("status", {}).get("conditions")
+        status_overall = False
         for condition in conditions:
-            if condition.get("status") == "False":
+            if condition.get("status") in ["False", "Unknown"] and condition.get("type") != "Stopped":
                 status_overall = False
                 break
             status_overall = True
-        assert status_overall is True
+        assert status_overall
 
     create_inf_svc()
     assert_isvc_state()
