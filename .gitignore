@@ -20,3 +20,5 @@ geckodriver.log
 images.txt
 charms.txt
 retagged-images.txt
+
+terraform/.terraform
