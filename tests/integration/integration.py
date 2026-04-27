@@ -15,6 +15,7 @@ import tenacity
 import yaml
 from pytest_operator.plugin import OpsTest
 
+ISTIO_GATEWAY_NAME = "istio-gateway"  # the default istio-gateway name
 ISVC = lightkube.generic_resource.create_namespaced_resource(
     group="serving.kserve.io",
     version="v1beta1",
@@ -45,10 +46,6 @@ async def test_terraform_solution_deployment():
             "terraform",
             "apply",
             "-auto-approve",
-            "-var",
-            "create_model=false",
-            "-var",
-            "model=inference-test",
         ],
         check=True,
     )
@@ -65,17 +62,6 @@ async def test_charms_active(ops_test: OpsTest):
         raise_on_error=False,
         timeout=3600,
     )
-
-
-# # Use the default istio-gateway name
-# ISTIO_GATEWAY_NAME = "istio-gateway"
-#     await ops_test.model.applications["knative-serving"].set_config(
-#         {
-#             "istio.gateway.name": ISTIO_GATEWAY_NAME,
-#             "istio.gateway.namespace": ops_test.model.name,
-#         }
-#     )
-#     await ops_test.model.wait_for_idle(status="active", timeout=90 * 10, raise_on_error=False)
 
 
 @pytest.mark.dependency(depends=["test_charms_active"])

@@ -24,8 +24,8 @@ jobs:
     strategy:
       matrix:
         kserve-mode:
-        - standard  # formerly "rawdeployment"
         - knative  # formerly "serverless"
+        - standard  # formerly "rawdeployment"
 
     steps:
       - name: Maximise GH runner space
@@ -44,10 +44,10 @@ jobs:
           sudo snap install concierge --classic
           sudo concierge prepare --trace
 
-      - name: Run integration tests
+      - name: Run integration tests with KServe in ${{ matrix.kserve-mode }} mode
         run: |
           juju add-model inference-test
-          tox -e integration-${{ matrix.kserve-mode }} -- --model inference-test
+          tox -e integration -- --kserve-mode ${{ matrix.kserve-mode }} --model inference-test
 
       - run: juju status --model inference-test
         if: failure()
