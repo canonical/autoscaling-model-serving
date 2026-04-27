@@ -22,8 +22,6 @@ ISVC = lightkube.generic_resource.create_namespaced_resource(
     plural="inferenceservices",
     verbs=None,
 )
-# Use the default istio-gateway name
-ISTIO_GATEWAY_NAME = "istio-gateway"
 SKLEARN_ISVC_YAML = yaml.safe_load(Path("./tests/integration/sklearn-iris.yaml").read_text())
 SKLEARN_ISVC_OBJECT = lightkube.codecs.load_all_yaml(yaml.dump(SKLEARN_ISVC_YAML))[0]  # noqa
 SKLEARN_ISVC_NAME = SKLEARN_ISVC_OBJECT.metadata.name
@@ -58,6 +56,8 @@ async def test_charms_active(ops_test: OpsTest):
     )
 
 
+# # Use the default istio-gateway name
+# ISTIO_GATEWAY_NAME = "istio-gateway"
 #     await ops_test.model.applications["knative-serving"].set_config(
 #         {
 #             "istio.gateway.name": ISTIO_GATEWAY_NAME,
@@ -71,7 +71,7 @@ async def test_charms_active(ops_test: OpsTest):
 def test_inference_service_deployment(ops_test: OpsTest, lightkube_client: lightkube.Client):
     """Create an InferenceService and validate it has a status."""
     # Use the model namespace for deploying the ISVC
-    serverless_namespace = ops_test.model.name
+    isvc_namespace = ops_test.model.name
 
     # Create InferenceService from example file
     @tenacity.retry(
@@ -80,7 +80,7 @@ def test_inference_service_deployment(ops_test: OpsTest, lightkube_client: light
         reraise=True,
     )
     def create_inf_svc():
-        lightkube_client.create(SKLEARN_ISVC_OBJECT, namespace=serverless_namespace)
+        lightkube_client.create(SKLEARN_ISVC_OBJECT, namespace=isvc_namespace)
 
     # Assert InferenceService state is Available
     @tenacity.retry(
@@ -90,7 +90,7 @@ def test_inference_service_deployment(ops_test: OpsTest, lightkube_client: light
     )
     def assert_isvc_state():
         status_overall = False
-        inf_svc = lightkube_client.get(ISVC, SKLEARN_ISVC_NAME, namespace=serverless_namespace)
+        inf_svc = lightkube_client.get(ISVC, SKLEARN_ISVC_NAME, namespace=isvc_namespace)
         conditions = inf_svc.get("status", {}).get("conditions")
         for condition in conditions:
             if condition.get("status") == "False":
@@ -106,20 +106,24 @@ def test_inference_service_deployment(ops_test: OpsTest, lightkube_client: light
 @pytest.mark.dependency(depends=["test_inference_service_deployment"])
 def test_inference_request(ops_test: OpsTest, lightkube_client: lightkube.Client):
     """Perform a POST request with data for sklearn-iris ISVC."""
+    isvc_namespace = ops_test.model.name
+
     # This input data is hardcoded based on
     # the example in https://kserve.github.io/website/latest/get_started/first_isvc/
     sklearn_iris_input = {"instances": [[6.8, 2.8, 4.8, 1.4], [6.0, 3.4, 4.5, 1.6]]}
     headers = {"Content-Type": "application/json"}
     url = get_isvc_url(
         isvc_name=SKLEARN_ISVC_NAME,
-        isvc_namespace=ops_test.model.name,
+        isvc_namespace=isvc_namespace,
         lightkube_client=lightkube_client,
     )
+
     inference_response = requests.post(
         f"{url}/v1/models/{SKLEARN_ISVC_NAME}:predict",
         headers=headers,
         data=json.dumps(sklearn_iris_input),
     ).text
+
     assert inference_response == '{"predictions":[1,1]}'
 
 
