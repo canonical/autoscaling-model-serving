@@ -45,7 +45,7 @@ jobs:
           sudo concierge prepare --trace
 
       - name: Run integration tests
-        run: tox -e integration-${{ matrix.bundle.uats.env }} -- --model inference-test
+        run: tox -e integration-${{ matrix.bundle.kserve-mode }} -- --model inference-test
 
       - run: juju status
         if: failure()
