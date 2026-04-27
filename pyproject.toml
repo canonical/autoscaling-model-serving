@@ -56,13 +56,6 @@ target-version = ["py38"]
 profile = "black"
 line_length = 99
 
-# update-requirements
-[tool.poetry.group.update-requirements]
-optional = true
-
-[tool.poetry.group.update-requirements.dependencies]
-poetry-plugin-export = "^1.8.0"
-
 # format
 [tool.poetry.group.fmt]
 optional = true
@@ -91,6 +84,7 @@ optional = true
 [tool.poetry.group.integration.dependencies]
 juju = "<4.0"
 lightkube = "^0.17.1"
+pytest-dependency = "^0.6.1"
 pytest-operator = "^0.42.0"
 pyyaml = "^6.0.2"
 requests = "^2.32.3"
