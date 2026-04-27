@@ -57,7 +57,7 @@ async def test_kserve_mode(ops_test: OpsTest, kserve_mode: str):
     """Check that the mode of KServe is as expected."""
     kserve_controller_application = ops_test.model.applications["kserve-controller"]
     actual_kserve_controller_configs = await kserve_controller_application.get_config()
-    actual_kserve_mode = actual_kserve_controller_configs["mode"]
+    actual_kserve_mode = actual_kserve_controller_configs["deployment-mode"]
     assert actual_kserve_mode == kserve_mode
 
 
