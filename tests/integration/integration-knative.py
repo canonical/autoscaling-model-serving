@@ -104,7 +104,10 @@ def test_inference_service_deployment(ops_test: OpsTest, lightkube_client: light
         conditions = inf_svc.get("status", {}).get("conditions")
         status_overall = False
         for condition in conditions:
-            if condition.get("status") in ["False", "Unknown"] and condition.get("type") != "Stopped":
+            if (
+                condition.get("status") in ["False", "Unknown"]
+                and condition.get("type") != "Stopped"
+            ):
                 status_overall = False
                 break
             status_overall = True
