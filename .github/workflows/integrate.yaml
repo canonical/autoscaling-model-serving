@@ -45,7 +45,9 @@ jobs:
           sudo concierge prepare --trace
 
       - name: Run integration tests
-        run: tox -e integration-${{ matrix.kserve-mode }} -- --model inference-test
+        run: |
+          juju add-model inference-test
+          tox -e integration-${{ matrix.kserve-mode }} -- --model inference-test
 
       - run: juju status --model inference-test
         if: failure()
