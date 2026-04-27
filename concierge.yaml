@@ -28,4 +28,3 @@ host:
       channel: 3.x/stable
     terraform:
       channel: latest/stable
-      confimenent: classic
