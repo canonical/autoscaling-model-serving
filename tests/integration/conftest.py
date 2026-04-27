@@ -15,7 +15,13 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture(scope="module")
-def tf_vars(request) -> list[str]:
+def kserve_mode(request) -> list[str]:
+    """KServe mode."""
+    return request.config.getoption("--kserve-mode")
+
+
+@pytest.fixture(scope="module")
+def tf_vars(kserve_mode) -> list[str]:
     """Overall Terraform module customization."""
     return [
         "-var",
@@ -23,5 +29,5 @@ def tf_vars(request) -> list[str]:
         "-var",
         "model=inference-test",
         "-var",
-        f"kserve_mode={request.config.getoption("--kserve-mode")}"
+        f"kserve_mode={kserve_mode}"
     ]

@@ -53,6 +53,14 @@ async def test_terraform_solution_deployment(tf_vars):
 
 
 @pytest.mark.dependency(depends=["test_terraform_solution_deployment"])
+async def test_kserve_mode(ops_test: OpsTest, kserve_mode: str):
+    """Check that the mode of KServe is as expected."""
+    kserve_controller_application = ops_test.model.applications["kserve-controller"]
+    actual_kserve_mode = await kserve_controller_application.get_config()["mode"]
+    assert actual_kserve_mode == kserve_mode
+
+
+@pytest.mark.dependency(depends=["test_terraform_solution_deployment"])
 async def test_charms_active(ops_test: OpsTest):
     """Wait for all charmed applications to be active."""
     apps = list(ops_test.model.applications.keys())
