@@ -29,5 +29,5 @@ def tf_vars(kserve_mode) -> list[str]:
         "-var",
         "model=inference-test",
         "-var",
-        f"kserve_mode={kserve_mode}"
+        f"kserve_mode={kserve_mode}",
     ]
