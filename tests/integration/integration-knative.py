@@ -66,10 +66,9 @@ async def test_charms_active(ops_test: OpsTest):
 #     await ops_test.model.wait_for_idle(status="active", timeout=90 * 10, raise_on_error=False)
 
 
+@pytest.mark.abort_on_fail
 @pytest.mark.dependency(depends=["test_charms_active"])
-def test_inference_service_deployment(
-    ops_test: OpsTest, lightkube_client: lightkube.Client
-):
+def test_inference_service_deployment(ops_test: OpsTest, lightkube_client: lightkube.Client):
     """Create an InferenceService and validate it has a status."""
     # Use the model namespace for deploying the ISVC
     serverless_namespace = ops_test.model.name
@@ -104,6 +103,7 @@ def test_inference_service_deployment(
     assert_isvc_state()
 
 
+@pytest.mark.abort_on_fail
 @pytest.mark.dependency(depends=["test_inference_service_deployment"])
 def test_inference_request(ops_test: OpsTest, lightkube_client: lightkube.Client):
     """Perform a POST request with data for sklearn-iris ISVC."""
