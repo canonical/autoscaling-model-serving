@@ -3,6 +3,7 @@
 
 import json
 import logging
+import subprocess
 from pathlib import Path
 
 import lightkube
@@ -13,7 +14,6 @@ import tenacity
 import yaml
 from pytest_operator.plugin import OpsTest
 
-BUNDLE_PATH = "./bundle/bundle.yaml"
 ISVC = lightkube.generic_resource.create_namespaced_resource(
     group="serving.kserve.io",
     version="v1beta1",
@@ -36,37 +36,38 @@ def lightkube_client() -> lightkube.Client:
     return client
 
 
-async def cli_deploy_bundle(ops_test: OpsTest, bundle_path: str):
-    """Deploy bundle from charmhub or from file."""
-    run_args = [
-        "juju",
-        "deploy",
-        "--trust",
-        "-m",
-        ops_test.model_full_name,
-        bundle_path,
-    ]
-
-    retcode, stdout, stderr = await ops_test.run(*run_args)
-    assert retcode == 0, f"Deploy failed: {(stderr or stdout).strip()}"
-    logger.info(stdout)
+@pytest.mark.abort_on_fail
+async def test_terraform_solution_deployment():
+    """Deploy the whole Terraform solution."""
+    subprocess.run(["terraform", "init"], check=True)
+    subprocess.run(["terraform", "apply", "-auto-approve"], check=True)
 
 
 @pytest.mark.abort_on_fail
-async def test_build_and_deploy(ops_test: OpsTest):
-    """Deploy the autoscaling-model-serving bundle."""
-    await cli_deploy_bundle(ops_test, bundle_path=BUNDLE_PATH)
-    # Configure knative-serving with Istio information
-    await ops_test.model.applications["knative-serving"].set_config(
-        {
-            "istio.gateway.name": ISTIO_GATEWAY_NAME,
-            "istio.gateway.namespace": ops_test.model.name,
-        }
+@pytest.mark.dependency(depends=["test_terraform_solution_deployment"])
+async def test_charms_active(ops_test: OpsTest):
+    """Wait for all charmed applications to be active."""
+    apps = list(ops_test.model.applications.keys())
+    await ops_test.model.wait_for_idle(
+        apps=apps,
+        status="active",
+        raise_on_blocked=False,
+        raise_on_error=False,
+        timeout=3600,
     )
-    await ops_test.model.wait_for_idle(status="active", timeout=90 * 10, raise_on_error=False)
 
 
-def test_inference_service_serverless_deployment(
+#     await ops_test.model.applications["knative-serving"].set_config(
+#         {
+#             "istio.gateway.name": ISTIO_GATEWAY_NAME,
+#             "istio.gateway.namespace": ops_test.model.name,
+#         }
+#     )
+#     await ops_test.model.wait_for_idle(status="active", timeout=90 * 10, raise_on_error=False)
+
+
+@pytest.mark.dependency(depends=["test_charms_active"])
+def test_inference_service_deployment(
     ops_test: OpsTest, lightkube_client: lightkube.Client
 ):
     """Create an InferenceService and validate it has a status."""
@@ -89,6 +90,7 @@ def test_inference_service_serverless_deployment(
         reraise=True,
     )
     def assert_isvc_state():
+        status_overall = False
         inf_svc = lightkube_client.get(ISVC, SKLEARN_ISVC_NAME, namespace=serverless_namespace)
         conditions = inf_svc.get("status", {}).get("conditions")
         for condition in conditions:
@@ -102,7 +104,8 @@ def test_inference_service_serverless_deployment(
     assert_isvc_state()
 
 
-def test_perfom_inference(ops_test: OpsTest, lightkube_client: lightkube.Client):
+@pytest.mark.dependency(depends=["test_inference_service_deployment"])
+def test_inference_request(ops_test: OpsTest, lightkube_client: lightkube.Client):
     """Perform a POST request with data for sklearn-iris ISVC."""
     # This input data is hardcoded based on
     # the example in https://kserve.github.io/website/latest/get_started/first_isvc/
