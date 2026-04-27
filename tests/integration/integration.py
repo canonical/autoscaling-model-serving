@@ -37,7 +37,7 @@ def lightkube_client() -> lightkube.Client:
 
 
 @pytest.mark.dependency()
-async def test_terraform_solution_deployment():
+async def test_terraform_solution_deployment(tf_vars):
     """Deploy the whole Terraform solution."""
     chdir("terraform")
     subprocess.run(["terraform", "init"], check=True)
@@ -46,7 +46,7 @@ async def test_terraform_solution_deployment():
             "terraform",
             "apply",
             "-auto-approve",
-        ],
+        ] + tf_vars,
         check=True,
     )
 
