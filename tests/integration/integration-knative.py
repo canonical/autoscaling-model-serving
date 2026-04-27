@@ -44,7 +44,6 @@ async def test_terraform_solution_deployment():
 
 
 @pytest.mark.abort_on_fail
-@pytest.mark.dependency(depends=["test_terraform_solution_deployment"])
 async def test_charms_active(ops_test: OpsTest):
     """Wait for all charmed applications to be active."""
     apps = list(ops_test.model.applications.keys())
@@ -67,7 +66,6 @@ async def test_charms_active(ops_test: OpsTest):
 
 
 @pytest.mark.abort_on_fail
-@pytest.mark.dependency(depends=["test_charms_active"])
 def test_inference_service_deployment(ops_test: OpsTest, lightkube_client: lightkube.Client):
     """Create an InferenceService and validate it has a status."""
     # Use the model namespace for deploying the ISVC
@@ -104,7 +102,6 @@ def test_inference_service_deployment(ops_test: OpsTest, lightkube_client: light
 
 
 @pytest.mark.abort_on_fail
-@pytest.mark.dependency(depends=["test_inference_service_deployment"])
 def test_inference_request(ops_test: OpsTest, lightkube_client: lightkube.Client):
     """Perform a POST request with data for sklearn-iris ISVC."""
     # This input data is hardcoded based on
