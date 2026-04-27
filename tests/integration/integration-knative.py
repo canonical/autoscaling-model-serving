@@ -40,7 +40,18 @@ async def test_terraform_solution_deployment():
     """Deploy the whole Terraform solution."""
     chdir("terraform")
     subprocess.run(["terraform", "init"], check=True)
-    subprocess.run(["terraform", "apply", "-auto-approve"], check=True)
+    subprocess.run(
+        [
+            "terraform",
+            "apply",
+            "-auto-approve",
+            "-var",
+            "create_model=false",
+            "-var",
+            "model=inference-test",
+        ],
+        check=True,
+    )
 
 
 @pytest.mark.dependency(depends=["test_terraform_solution_deployment"])

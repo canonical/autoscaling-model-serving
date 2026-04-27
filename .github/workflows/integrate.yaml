@@ -47,5 +47,5 @@ jobs:
       - name: Run integration tests
         run: tox -e integration-${{ matrix.kserve-mode }} -- --model inference-test
 
-      - run: juju status
+      - run: juju status --model inference-test
         if: failure()
