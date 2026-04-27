@@ -46,7 +46,8 @@ async def test_terraform_solution_deployment(tf_vars):
             "terraform",
             "apply",
             "-auto-approve",
-        ] + tf_vars,
+        ]
+        + tf_vars,
         check=True,
     )
 
