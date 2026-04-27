@@ -40,7 +40,7 @@ def lightkube_client() -> lightkube.Client:
 @pytest.mark.abort_on_fail
 async def test_terraform_solution_deployment():
     """Deploy the whole Terraform solution."""
-    chdir("../terraform")
+    chdir("terraform")
     subprocess.run(["cd", "terraform", "&&", "terraform", "init"], check=True)
     subprocess.run(["terraform", "apply", "-auto-approve"], check=True)
 
