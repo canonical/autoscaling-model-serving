@@ -41,7 +41,7 @@ def lightkube_client() -> lightkube.Client:
 async def test_terraform_solution_deployment():
     """Deploy the whole Terraform solution."""
     chdir("terraform")
-    subprocess.run(["cd", "terraform", "&&", "terraform", "init"], check=True)
+    subprocess.run(["terraform", "init"], check=True)
     subprocess.run(["terraform", "apply", "-auto-approve"], check=True)
 
 
