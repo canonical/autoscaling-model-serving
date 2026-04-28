@@ -115,7 +115,7 @@ def test_inference_service_deployment(ops_test: OpsTest, lightkube_client: light
 
 
 @pytest.mark.dependency(depends=["test_inference_service_deployment"])
-def test_inference_request(ops_test: OpsTest, lightkube_client: lightkube.Client, kseve_mode: str):
+def test_inference_request(ops_test: OpsTest, lightkube_client: lightkube.Client, kserve_mode: str):
     """Perform a POST request with data for sklearn-iris ISVC."""
     namespace = ops_test.model.name
 
@@ -134,7 +134,7 @@ def test_inference_request(ops_test: OpsTest, lightkube_client: lightkube.Client
         lightkube_client=lightkube_client,
     )
     headers = {"Content-Type": "application/json"}
-    if kseve_mode == STANDARD_MODE_NAME:
+    if kserve_mode == STANDARD_MODE_NAME:
         headers["Host"] = isvc_url.replace("http://", "")
     base_url = f"http://{gateway_ip_address}" if STANDARD_MODE_NAME else isvc_url
     endpoint_url = f"{base_url}/v1/models/{SKLEARN_ISVC_NAME}:predict"
