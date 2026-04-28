@@ -82,7 +82,7 @@ variable "kserve_controller_revision" {
 }
 
 variable "kserve_mode" {
-  description = "KServe mode"
+  description = "KServe's deployment mode"
   type        = string
   default     = "knative"
 

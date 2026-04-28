@@ -10,7 +10,7 @@ def pytest_addoption(parser):
         const="knative",
         default="knative",
         type=str,
-        help="KServe mode",
+        help="KServe's deployment mode",
     )
 
 
