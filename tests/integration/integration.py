@@ -119,11 +119,15 @@ def test_inference_request(ops_test: OpsTest, lightkube_client: lightkube.Client
     """Perform a POST request with data for sklearn-iris ISVC."""
     namespace = ops_test.model.name
 
-    gateway_ip_address = lightkube_client.get(
-        lightkube.resources.core_v1.Service,
-        name=ISTIO_GATEWAY_SERVICE_NAME,
-        namespace=namespace,
-    ).status.loadBalancer.ingress[0].ip
+    gateway_ip_address = (
+        lightkube_client.get(
+            lightkube.resources.core_v1.Service,
+            name=ISTIO_GATEWAY_SERVICE_NAME,
+            namespace=namespace,
+        )
+        .status.loadBalancer.ingress[0]
+        .ip
+    )
     isvc_url = get_isvc_url(
         isvc_name=SKLEARN_ISVC_NAME,
         isvc_namespace=namespace,
