@@ -143,9 +143,10 @@ def test_inference_request(
     # input data from the example https://kserve.github.io/website/latest/get_started/first_isvc/
     prediction_input = json.dumps({"instances": [[6.8, 2.8, 4.8, 1.4], [6.0, 3.4, 4.5, 1.6]]})
 
-    inference_response = requests.post(endpoint_url, headers=headers, data=prediction_input).text
+    inference_response = requests.post(endpoint_url, headers=headers, data=prediction_input)
 
-    assert inference_response == '{"predictions":[1,1]}'
+    assert inference_response.status_code == 200
+    assert inference_response.json() == {"predictions": [1, 1]}
 
 
 @tenacity.retry(
