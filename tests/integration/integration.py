@@ -15,7 +15,7 @@ import tenacity
 import yaml
 from pytest_operator.plugin import OpsTest
 
-ISTIO_GATEWAY_NAME = "istio-gateway"  # the default istio-gateway name
+ISTIO_GATEWAY_SERVICE_NAME = "istio-ingressgateway-workload"
 ISVC = lightkube.generic_resource.create_namespaced_resource(
     group="serving.kserve.io",
     version="v1beta1",
@@ -26,6 +26,7 @@ ISVC = lightkube.generic_resource.create_namespaced_resource(
 SKLEARN_ISVC_YAML = yaml.safe_load(Path("./tests/integration/sklearn-iris.yaml").read_text())
 SKLEARN_ISVC_OBJECT = lightkube.codecs.load_all_yaml(yaml.dump(SKLEARN_ISVC_YAML))[0]  # noqa
 SKLEARN_ISVC_NAME = SKLEARN_ISVC_OBJECT.metadata.name
+STANDARD_MODE_NAME = "standard"
 
 logger = logging.getLogger(__name__)
 
@@ -114,25 +115,29 @@ def test_inference_service_deployment(ops_test: OpsTest, lightkube_client: light
 
 
 @pytest.mark.dependency(depends=["test_inference_service_deployment"])
-def test_inference_request(ops_test: OpsTest, lightkube_client: lightkube.Client):
+def test_inference_request(ops_test: OpsTest, lightkube_client: lightkube.Client, kseve_mode: str):
     """Perform a POST request with data for sklearn-iris ISVC."""
-    isvc_namespace = ops_test.model.name
+    namespace = ops_test.model.name
 
-    # This input data is hardcoded based on
-    # the example in https://kserve.github.io/website/latest/get_started/first_isvc/
-    sklearn_iris_input = {"instances": [[6.8, 2.8, 4.8, 1.4], [6.0, 3.4, 4.5, 1.6]]}
-    headers = {"Content-Type": "application/json"}
-    url = get_isvc_url(
+    gateway_ip_address = lightkube_client.get(
+        lightkube.resources.core_v1.Service,
+        name=ISTIO_GATEWAY_SERVICE_NAME,
+        namespace=namespace,
+    ).status.loadBalancer.ingress[0].ip
+    isvc_url = get_isvc_url(
         isvc_name=SKLEARN_ISVC_NAME,
-        isvc_namespace=isvc_namespace,
+        isvc_namespace=namespace,
         lightkube_client=lightkube_client,
     )
+    headers = {"Content-Type": "application/json"}
+    if kseve_mode == STANDARD_MODE_NAME:
+        headers["Host"] = isvc_url.replace("http://", "")
+    base_url = f"http://{gateway_ip_address}" if STANDARD_MODE_NAME else isvc_url
+    endpoint_url = f"{base_url}/v1/models/{SKLEARN_ISVC_NAME}:predict"
+    # input data from the example https://kserve.github.io/website/latest/get_started/first_isvc/
+    prediction_input = json.dumps({"instances": [[6.8, 2.8, 4.8, 1.4], [6.0, 3.4, 4.5, 1.6]]})
 
-    inference_response = requests.post(
-        f"{url}/v1/models/{SKLEARN_ISVC_NAME}:predict",
-        headers=headers,
-        data=json.dumps(sklearn_iris_input),
-    ).text
+    inference_response = requests.post(endpoint_url, headers=headers, data=prediction_input).text
 
     assert inference_response == '{"predictions":[1,1]}'
 
@@ -145,4 +150,4 @@ def test_inference_request(ops_test: OpsTest, lightkube_client: lightkube.Client
 def get_isvc_url(isvc_name: str, isvc_namespace: str, lightkube_client: lightkube.Client) -> str:
     """Return the ISVC url from an existing ISVC in the K8s deployment."""
     isvc_object = lightkube_client.get(ISVC, isvc_name, namespace=isvc_namespace)
-    return isvc_object.get("status")["components"]["predictor"]["url"]
+    return isvc_object.get("status")["url"]
