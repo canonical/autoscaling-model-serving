@@ -115,7 +115,9 @@ def test_inference_service_deployment(ops_test: OpsTest, lightkube_client: light
 
 
 @pytest.mark.dependency(depends=["test_inference_service_deployment"])
-def test_inference_request(ops_test: OpsTest, lightkube_client: lightkube.Client, kserve_mode: str):
+def test_inference_request(
+    ops_test: OpsTest, lightkube_client: lightkube.Client, kserve_mode: str
+):
     """Perform a POST request with data for sklearn-iris ISVC."""
     namespace = ops_test.model.name
 
