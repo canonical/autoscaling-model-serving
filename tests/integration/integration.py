@@ -120,6 +120,7 @@ def test_inference_request(
 ):
     """Perform a POST request with data for sklearn-iris ISVC."""
     namespace = ops_test.model.name
+    is_kserve_in_standard_mode = kserve_mode == STANDARD_MODE_NAME
 
     gateway_ip_address = (
         lightkube_client.get(
@@ -136,16 +137,16 @@ def test_inference_request(
         lightkube_client=lightkube_client,
     )
     headers = {"Content-Type": "application/json"}
-    if kserve_mode == STANDARD_MODE_NAME:
+    if is_kserve_in_standard_mode:
         headers["Host"] = isvc_url.replace("http://", "")
-    base_url = f"http://{gateway_ip_address}" if STANDARD_MODE_NAME else isvc_url
+    base_url = f"http://{gateway_ip_address}" if is_kserve_in_standard_mode else isvc_url
     endpoint_url = f"{base_url}/v1/models/{SKLEARN_ISVC_NAME}:predict"
     # input data from the example https://kserve.github.io/website/latest/get_started/first_isvc/
     prediction_input = json.dumps({"instances": [[6.8, 2.8, 4.8, 1.4], [6.0, 3.4, 4.5, 1.6]]})
 
     inference_response = requests.post(endpoint_url, headers=headers, data=prediction_input)
 
-    if kserve_mode == STANDARD_MODE_NAME:  # TODO: remove it, it's just for debugging
+    if is_kserve_in_standard_mode:  # TODO: remove it, it's just for debugging
         return
     assert inference_response.status_code == 200
     assert inference_response.text == '{"predictions":[1,1]}'
