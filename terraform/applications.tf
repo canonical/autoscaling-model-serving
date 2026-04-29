@@ -9,7 +9,7 @@ module "istio_ingressgateway" {
   /*
     NOTE: "edge" risk to include this bugfix:
       https://github.com/canonical/istio-operators/pull/691
-    TODO: restore "${var.risk}" when that fix is promoted all the way up to "stable" risk
+    TODO: restore "${var.risk}" as the channel risk when that fix is promoted all the way up to "stable" risk
   */
   channel = "1.28/edge"
 }
