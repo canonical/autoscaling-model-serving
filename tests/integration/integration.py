@@ -132,7 +132,7 @@ def test_inference_request(
     )
 
     # NOTE: accessing InferenceService:
-    # - when in Knative (Serveless) mode, directly at its URL
+    # - when in Knative (Serverless) mode, directly at its URL
     # - when in Standard (RawDeployment) mode, through Istio's Ingress via "Host" header
     base_url = isvc_url
     headers = {"Content-Type": "application/json"}

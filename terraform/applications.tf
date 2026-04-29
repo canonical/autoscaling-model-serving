@@ -11,7 +11,7 @@ module "istio_ingressgateway" {
       https://github.com/canonical/istio-operators/pull/691
     TODO: restore "${var.risk}" when that fix is promoted all the way up to "stable" risk
   */
-  channel  = "1.28/edge"
+  channel = "1.28/edge"
 }
 
 module "istio_pilot" {
