@@ -1,7 +1,7 @@
 variable "risk" {
   type        = string
   description = "Risk for all charm channels"
-  default     = "stable"
+  default     = "edge"
 
   validation {
     condition     = contains(["stable", "candidate", "beta", "edge"], var.risk)

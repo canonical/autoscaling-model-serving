@@ -49,5 +49,5 @@ module "kserve_controller" {
     deployment-mode = var.kserve_mode,
   }
   revision = var.kserve_controller_revision
-  channel  = "0.17/edge"
+  channel  = "0.17/${var.risk}"
 }

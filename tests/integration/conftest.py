@@ -4,6 +4,15 @@ import pytest
 def pytest_addoption(parser):
     """Add CLI options to pytest."""
     parser.addoption(
+        "--risk",
+        nargs="?",
+        choices=["stable", "candidate", "beta", "edge"],
+        const="edge",
+        default="edge",
+        type=str,
+        help="Risk for charm channels",
+    )
+    parser.addoption(
         "--kserve-mode",
         nargs="?",
         choices=["knative", "standard"],
@@ -21,13 +30,15 @@ def kserve_mode(request) -> list[str]:
 
 
 @pytest.fixture(scope="module")
-def tf_vars(kserve_mode) -> list[str]:
+def tf_vars(request, kserve_mode) -> list[str]:
     """Overall Terraform module customization."""
     return [
         "-var",
         "create_model=false",
         "-var",
         "model=inference-test",
+        "-var",
+        f"risk={request.config.getoption("--risk")}",
         "-var",
         f"kserve_mode={kserve_mode}",
     ]
