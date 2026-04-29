@@ -24,13 +24,19 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture(scope="module")
+def risk(request) -> list[str]:
+    """Risk for charm channels."""
+    return request.config.getoption("--risk")
+
+
+@pytest.fixture(scope="module")
 def kserve_mode(request) -> list[str]:
     """KServe mode."""
     return request.config.getoption("--kserve-mode")
 
 
 @pytest.fixture(scope="module")
-def tf_vars(request, kserve_mode) -> list[str]:
+def tf_vars(risk, kserve_mode) -> list[str]:
     """Overall Terraform module customization."""
     return [
         "-var",
@@ -38,7 +44,7 @@ def tf_vars(request, kserve_mode) -> list[str]:
         "-var",
         "model=inference-test",
         "-var",
-        f"risk={request.config.getoption("--risk")}",
+        f"risk={risk}",
         "-var",
         f"kserve_mode={kserve_mode}",
     ]
