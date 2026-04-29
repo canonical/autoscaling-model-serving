@@ -6,7 +6,7 @@ module "istio_ingressgateway" {
     kind = "ingress",
   }
   revision = var.istio_ingressgateway_revision
-  channel  = "edge/pr-691"
+  channel  = "latest/edge/pr-691"
 }
 
 module "istio_pilot" {
