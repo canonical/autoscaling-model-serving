@@ -7,11 +7,11 @@ module "istio_ingressgateway" {
   }
   revision = var.istio_ingressgateway_revision
   /*
-    NOTE: "edge" risk to include this bugfix:
+    NOTE: "latest/edge" channel to include this bugfix:
       https://github.com/canonical/istio-operators/pull/691
-    TODO: restore "${var.risk}" when that fix is promoted all the way up to "stable" risk
+    TODO: restore "1.28/${var.risk}" as a channel when that fix is promoted all the way up to "1.28/stable"
   */
-  channel = "1.28/edge"
+  channel = "latest/edge"
 }
 
 module "istio_pilot" {
