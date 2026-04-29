@@ -118,36 +118,42 @@ def test_inference_service_deployment(ops_test: OpsTest, lightkube_client: light
 def test_inference_request(
     ops_test: OpsTest, lightkube_client: lightkube.Client, kserve_mode: str
 ):
-    """Perform a POST request with data for sklearn-iris ISVC."""
+    """Perform a POST request with data for sklearn-iris ISVC.
+
+    Example from https://kserve.github.io/website/latest/get_started/first_isvc/
+    """
     namespace = ops_test.model.name
     is_kserve_in_standard_mode = kserve_mode == STANDARD_MODE_NAME
 
-    gateway_ip_address = (
-        lightkube_client.get(
-            lightkube.resources.core_v1.Service,
-            name=ISTIO_GATEWAY_SERVICE_NAME,
-            namespace=namespace,
-        )
-        .status.loadBalancer.ingress[0]
-        .ip
-    )
     isvc_url = get_isvc_url(
         isvc_name=SKLEARN_ISVC_NAME,
         isvc_namespace=namespace,
         lightkube_client=lightkube_client,
     )
+
+    # NOTE: accessing InferenceService:
+    # - when in Knative (Serveless) mode, directly at its URL
+    # - when in Standard (RawDeployment) mode, through Istio's Ingress via "Host" header
+    base_url = isvc_url
     headers = {"Content-Type": "application/json"}
     if is_kserve_in_standard_mode:
         headers["Host"] = isvc_url.replace("http://", "")
-    base_url = f"http://{gateway_ip_address}" if is_kserve_in_standard_mode else isvc_url
+        gateway_ip_address = (
+            lightkube_client.get(
+                lightkube.resources.core_v1.Service,
+                name=ISTIO_GATEWAY_SERVICE_NAME,
+                namespace=namespace,
+            )
+            .status.loadBalancer.ingress[0]
+            .ip
+        )
+        base_url = f"http://{gateway_ip_address}"
+
     endpoint_url = f"{base_url}/v1/models/{SKLEARN_ISVC_NAME}:predict"
-    # input data from the example https://kserve.github.io/website/latest/get_started/first_isvc/
     prediction_input = json.dumps({"instances": [[6.8, 2.8, 4.8, 1.4], [6.0, 3.4, 4.5, 1.6]]})
 
     inference_response = requests.post(endpoint_url, headers=headers, data=prediction_input)
 
-    if is_kserve_in_standard_mode:  # TODO: remove it, it's just for debugging
-        return
     assert inference_response.status_code == 200
     assert inference_response.text == '{"predictions":[1,1]}'
 
