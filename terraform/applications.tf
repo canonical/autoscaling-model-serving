@@ -6,7 +6,7 @@ module "istio_ingressgateway" {
     kind = "ingress",
   }
   revision = var.istio_ingressgateway_revision
-  channel = "1.28/${var.risk}"
+  channel  = "1.28/${var.risk}"
 }
 
 module "istio_pilot" {
