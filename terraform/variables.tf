@@ -1,13 +1,30 @@
-variable "cos_configuration" {
-  description = "Boolean value that enables COS configuration"
-  type        = bool
-  default     = false
+variable "risk" {
+  type        = string
+  description = "Risk for all charm channels"
+  default     = "edge"
+
+  validation {
+    condition     = contains(["stable", "candidate", "beta", "edge"], var.risk)
+    error_message = "Valid values for var: risk are (stable, candidate, beta and edge)."
+  }
 }
 
 variable "create_model" {
   description = "Whether to create a model or reuse one created in a higher level module"
   type        = bool
   default     = true
+}
+
+variable "model" {
+  description = "Model name"
+  type        = string
+  default     = "as-model-serving"
+}
+
+variable "cos_configuration" {
+  description = "Boolean value that enables COS configuration"
+  type        = bool
+  default     = false
 }
 
 variable "existing_grafana_agent_name" {
@@ -64,8 +81,13 @@ variable "kserve_controller_revision" {
   default     = null
 }
 
-variable "model" {
-  description = "Model name"
+variable "kserve_mode" {
+  description = "KServe's deployment mode"
   type        = string
-  default     = "as-model-serving"
+  default     = "knative"
+
+  validation {
+    condition     = contains(["knative", "standard"], var.kserve_mode)
+    error_message = "Valid values for var: kserve_mode are (knative, standard)."
+  }
 }
