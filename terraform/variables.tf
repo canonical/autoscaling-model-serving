@@ -91,3 +91,21 @@ variable "kserve_mode" {
     error_message = "Valid values for var: kserve_mode are (knative, standard)."
   }
 }
+
+variable "http_proxy" {
+  description = "Value of the http_proxy environment variable"
+  type        = string
+  default     = ""
+}
+
+variable "https_proxy" {
+  description = "Value of the https_proxy environment variable"
+  type        = string
+  default     = ""
+}
+
+variable "no_proxy" {
+  description = "Value of the no_proxy environment variable"
+  type        = string
+  default     = ""
+}
