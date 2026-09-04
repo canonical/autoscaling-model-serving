@@ -39,13 +39,13 @@ def pytest_addoption(parser):
 
 @pytest.fixture(scope="module")
 def scenario(request) -> str:
-    """The selected deployment scenario."""
+    """Return the selected deployment scenario."""
     return request.config.getoption("--scenario")
 
 
 @pytest.fixture(scope="module")
 def juju(scenario):
-    """A jubilant.Juju handle bound to a freshly created model for the scenario."""
+    """Create a jubilant.Juju handle bound to a fresh model for the scenario."""
     juju_instance = jubilant.Juju()
     juju_instance.add_model(SCENARIOS[scenario]["model"])
     yield juju_instance
@@ -53,7 +53,7 @@ def juju(scenario):
 
 @pytest.fixture(scope="module")
 def model_uuid(juju, scenario) -> str:
-    """UUID of the pre-created deployment model."""
+    """Return the UUID of the pre-created deployment model."""
     model = SCENARIOS[scenario]["model"]
     # `juju show-model` takes the model as a positional, so suppress jubilant's
     # automatic `--model` injection.
@@ -63,13 +63,13 @@ def model_uuid(juju, scenario) -> str:
 
 @pytest.fixture(scope="module")
 def solution_module_path(scenario) -> str:
-    """Path to the Terraform root module to apply for the selected scenario."""
+    """Return the path to the Terraform root module for the selected scenario."""
     return SCENARIOS[scenario]["module_path"]
 
 
 @pytest.fixture(scope="module")
 def tf_vars(scenario, model_uuid) -> list[str]:
-    """Terraform `-var` arguments for the selected scenario.
+    """Build the Terraform `-var` arguments for the selected scenario.
 
     The deployment model is pre-created by the `juju` fixture and referenced by
     its UUID, so every scenario deploys with `create_model=false`. kserve
