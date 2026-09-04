@@ -1,0 +1,53 @@
+# Copyright 2026 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+# KServe Controller application (standard deployment mode for LLM serving).
+resource "juju_application" "kserve_controller" {
+  charm {
+    name     = "kserve-controller"
+    channel  = var.kserve_controller.channel
+    revision = var.kserve_controller.revision
+  }
+
+  model_uuid  = var.model_uuid
+  name        = var.kserve_controller.app_name
+  units       = var.kserve_controller.units
+  trust       = var.kserve_controller.trust
+  constraints = var.kserve_controller.constraints
+  config      = var.kserve_controller.config
+  resources   = var.kserve_controller.resources
+}
+
+# KServe LLMISVC controller (reconciles LLMInferenceService resources).
+resource "juju_application" "kserve_llmisvc" {
+  charm {
+    name     = "kserve-llmisvc"
+    channel  = var.kserve_llmisvc.channel
+    revision = var.kserve_llmisvc.revision
+  }
+
+  model_uuid  = var.model_uuid
+  name        = var.kserve_llmisvc.app_name
+  units       = var.kserve_llmisvc.units
+  trust       = var.kserve_llmisvc.trust
+  constraints = var.kserve_llmisvc.constraints
+  config      = var.kserve_llmisvc.config
+  resources   = var.kserve_llmisvc.resources
+}
+
+# LeaderWorkerSet controller (manages multi-node inference worker groups).
+resource "juju_application" "lws_controller" {
+  charm {
+    name     = "lws-controller"
+    channel  = var.lws_controller.channel
+    revision = var.lws_controller.revision
+  }
+
+  model_uuid  = var.model_uuid
+  name        = var.lws_controller.app_name
+  units       = var.lws_controller.units
+  trust       = var.lws_controller.trust
+  constraints = var.lws_controller.constraints
+  config      = var.lws_controller.config
+  resources   = var.lws_controller.resources
+}
