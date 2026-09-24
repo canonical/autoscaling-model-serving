@@ -50,9 +50,7 @@ def test_charms_active(juju: jubilant.Juju, scenario, expected_apps):
     # Guard against a scenario silently dropping a charm (e.g. keda/lws).
     deployed = set(status.apps)
     missing = [app for app in expected_apps if app not in deployed]
-    assert not missing, (
-        f"expected applications not deployed: {missing} (have {sorted(deployed)})"
-    )
+    assert not missing, f"expected applications not deployed: {missing} (have {sorted(deployed)})"
 
     # The llm-cos scenario also stands up COS in its own model.
     if scenario == "llm-cos":
