@@ -20,10 +20,11 @@ terraform/
 │   ├── envoy-ingress/  # Envoy Gateway ingress (envoy-ingress-k8s)
 │   ├── kserve-llm/     # kserve-controller (standard) + kserve-llmisvc
 │   ├── lws-controller/ # LeaderWorkerSet controller (multi-node inference)
+│   ├── keda-controller/ # KEDA event-driven autoscaling
 │   └── observability/  # opentelemetry-collector-k8s + COS offers
 ├── products/
 │   ├── kserve/        # knative (sidecar) OR standard (ambient); reuses kubeflow components
-│   └── llm/           # envoy + envoy-ingress + kserve-llm + lws-controller (+ observability)
+│   └── llm/           # envoy + envoy-ingress + kserve-llm + lws-controller + keda-controller (+ observability)
 └── deployments/
     └── llm-cos/       # cos-lite + the llm product wired to COS
 ```

@@ -42,6 +42,15 @@ output "lws_controller" {
   }
 }
 
+output "keda_controller" {
+  description = "Outputs of the keda-controller component (components, provides, requires)"
+  value = {
+    components = module.keda_controller.components
+    provides   = module.keda_controller.provides
+    requires   = module.keda_controller.requires
+  }
+}
+
 output "observability" {
   description = "Outputs of the observability component (components, provides). Null when observability is disabled."
   value = var.enable_observability ? {

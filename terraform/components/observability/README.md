@@ -2,9 +2,9 @@
 
 Deploys an `opentelemetry-collector-k8s` that aggregates telemetry from the
 KServe LLM serving charms (`kserve-controller`, `kserve-llmisvc`,
-`lws-controller`) and forwards it to a (typically cross-model) COS stack. This
-mirrors the `observability` component of [Charmed Kubeflow
-Solutions](https://github.com/canonical/charmed-kubeflow-solutions).
+`lws-controller`, `keda-controller`) and forwards it to a (typically
+cross-model) COS stack. This mirrors the `observability` component of [Charmed
+Kubeflow Solutions](https://github.com/canonical/charmed-kubeflow-solutions).
 
 The Envoy Gateway charms are intentionally **not** wired here; they export
 workload metrics over `otlp` rather than `prometheus_scrape`.
@@ -23,10 +23,12 @@ workload metrics over `otlp` rather than `prometheus_scrape`.
 | --- | --- | --- |
 | `kserve_controller_metrics_endpoint` | `kserve-controller:metrics-endpoint` | `metrics-endpoint` |
 | `kserve_llmisvc_metrics_endpoint` | `kserve-llmisvc:metrics-endpoint` | `metrics-endpoint` |
+| `keda_controller_metrics_endpoint` | `keda-controller:metrics-endpoint` | `metrics-endpoint` |
 | `kserve_llmisvc_grafana_dashboard` | `kserve-llmisvc:grafana-dashboard` | `grafana-dashboards-consumer` |
 | `kserve_controller_logging` | `kserve-controller:logging` | `receive-loki-logs` |
 | `kserve_llmisvc_logging` | `kserve-llmisvc:logging` | `receive-loki-logs` |
 | `lws_controller_logging` | `lws-controller:logging` | `receive-loki-logs` |
+| `keda_controller_logging` | `keda-controller:logging` | `receive-loki-logs` |
 
 ## Inputs
 

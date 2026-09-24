@@ -43,9 +43,16 @@ def test_apply_terraform_solution(solution_module_path, tf_vars):
 
 
 @pytest.mark.dependency(depends=["test_apply_terraform_solution"])
-def test_charms_active(juju: jubilant.Juju, scenario):
+def test_charms_active(juju: jubilant.Juju, scenario, expected_apps):
     """Wait for all deployed applications to become active and idle."""
-    juju.wait(jubilant.all_active, timeout=3600, delay=10)
+    status = juju.wait(jubilant.all_active, timeout=3600, delay=10)
+
+    # Guard against a scenario silently dropping a charm (e.g. keda/lws).
+    deployed = set(status.apps)
+    missing = [app for app in expected_apps if app not in deployed]
+    assert not missing, (
+        f"expected applications not deployed: {missing} (have {sorted(deployed)})"
+    )
 
     # The llm-cos scenario also stands up COS in its own model.
     if scenario == "llm-cos":
