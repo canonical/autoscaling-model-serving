@@ -7,22 +7,36 @@ import jubilant
 import pytest
 
 # Maps a --scenario to the deployment model name, the Terraform root module to
-# apply (relative to the repository root), and the extra `-var` arguments.
+# apply (relative to the repository root), the extra `-var` arguments, and the
+# applications that must be present in the deployment.
 SCENARIOS = {
     "kserve-knative": {
         "model": "kserve",
         "module_path": "terraform/products/kserve",
         "tf_vars": ["-var", "kserve_mode=knative"],
+        "apps": ["kserve-controller"],
     },
     "kserve-standard": {
         "model": "kserve",
         "module_path": "terraform/products/kserve",
         "tf_vars": ["-var", "kserve_mode=standard"],
+        "apps": ["kserve-controller"],
     },
     "llm-cos": {
         "model": "kserve-llm",
         "module_path": "terraform/deployments/llm-cos",
         "tf_vars": [],
+        "apps": [
+            "envoy-controller-k8s",
+            "envoy-ai-controller-k8s",
+            "envoy-ingress-k8s",
+            "kserve-controller",
+            "kserve-llmisvc",
+            "lws-controller",
+            "keda-controller",
+            "self-signed-certificates",
+            "opentelemetry-collector-k8s",
+        ],
     },
 }
 
@@ -65,6 +79,12 @@ def model_uuid(juju, scenario) -> str:
 def solution_module_path(scenario) -> str:
     """Return the path to the Terraform root module for the selected scenario."""
     return SCENARIOS[scenario]["module_path"]
+
+
+@pytest.fixture(scope="module")
+def expected_apps(scenario) -> list[str]:
+    """Return the applications that must be present in the deployment."""
+    return SCENARIOS[scenario]["apps"]
 
 
 @pytest.fixture(scope="module")

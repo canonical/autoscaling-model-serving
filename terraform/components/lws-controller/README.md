@@ -4,6 +4,10 @@ Deploys the `lws-controller` (LeaderWorkerSet) charm, which manages multi-node
 inference worker groups. It is a standalone component so it can be reused
 independently of the KServe LLM serving stack.
 
+The charm is built from its own repository,
+[lws-controller-operator](https://github.com/canonical/lws-controller-operator),
+and consumed here from Charmhub by channel/revision.
+
 ## Inputs
 
 | Name | Type | Description |

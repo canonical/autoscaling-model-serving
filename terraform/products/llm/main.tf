@@ -111,6 +111,19 @@ module "lws_controller" {
   }
 }
 
+# KEDA controller: cluster-wide event-driven autoscaling for serving workloads.
+module "keda_controller" {
+  source = "../../components/keda-controller"
+
+  model_uuid = local.model_uuid
+
+  keda_controller = {
+    channel  = var.keda_controller_channel
+    revision = var.keda_controller_revision
+    config   = var.keda_controller_config
+  }
+}
+
 # lws-controller feeds LeaderWorkerSet configuration to kserve-llmisvc.
 resource "juju_integration" "kserve_llmisvc_lws_controller" {
   model_uuid = local.model_uuid
@@ -150,4 +163,6 @@ module "observability" {
   kserve_controller_logging          = module.kserve_llm.requires.kserve_controller_logging
   kserve_llmisvc_logging             = module.kserve_llm.requires.kserve_llmisvc_logging
   lws_controller_logging             = module.lws_controller.requires.lws_controller_logging
+  keda_controller_metrics_endpoint   = module.keda_controller.provides.keda_controller_metrics_endpoint
+  keda_controller_logging            = module.keda_controller.requires.keda_controller_logging
 }

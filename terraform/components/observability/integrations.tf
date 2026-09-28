@@ -94,6 +94,21 @@ resource "juju_integration" "kserve_llmisvc_metrics_endpoint" {
   }
 }
 
+resource "juju_integration" "keda_controller_metrics_endpoint" {
+  count      = var.keda_controller_metrics_endpoint != null ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    name     = var.keda_controller_metrics_endpoint.name
+    endpoint = var.keda_controller_metrics_endpoint.endpoint
+  }
+
+  application {
+    name     = juju_application.opentelemetry_collector_k8s.name
+    endpoint = "metrics-endpoint"
+  }
+}
+
 # ---------------------------------------------------------------------------
 # Grafana dashboards: charm -> collector
 # ---------------------------------------------------------------------------
@@ -154,6 +169,21 @@ resource "juju_integration" "lws_controller_logging" {
   application {
     name     = var.lws_controller_logging.name
     endpoint = var.lws_controller_logging.endpoint
+  }
+
+  application {
+    name     = juju_application.opentelemetry_collector_k8s.name
+    endpoint = "receive-loki-logs"
+  }
+}
+
+resource "juju_integration" "keda_controller_logging" {
+  count      = var.keda_controller_logging != null ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    name     = var.keda_controller_logging.name
+    endpoint = var.keda_controller_logging.endpoint
   }
 
   application {

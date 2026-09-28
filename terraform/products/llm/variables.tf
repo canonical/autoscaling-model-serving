@@ -59,6 +59,12 @@ variable "lws_controller_channel" {
   default     = "latest/edge"
 }
 
+variable "keda_controller_channel" {
+  description = "Charm channel for keda-controller"
+  type        = string
+  default     = "latest/edge"
+}
+
 # --- Per-charm revision overrides ------------------------------------------
 
 variable "envoy_controller_k8s_revision" {
@@ -109,10 +115,22 @@ variable "lws_controller_revision" {
   default     = null
 }
 
+variable "keda_controller_revision" {
+  description = "Charm revision for keda-controller"
+  type        = number
+  default     = null
+}
+
 # --- Per-charm config overrides --------------------------------------------
 
 variable "kserve_controller_config" {
   description = "Extra config for kserve-controller (merged over the defaults)"
+  type        = map(string)
+  default     = {}
+}
+
+variable "keda_controller_config" {
+  description = "Extra config for keda-controller"
   type        = map(string)
   default     = {}
 }

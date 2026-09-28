@@ -62,6 +62,13 @@ variable "kserve_llmisvc_metrics_endpoint" {
   default     = null
 }
 
+variable "keda_controller_metrics_endpoint" {
+  description = "metrics-endpoint (prometheus_scrape) provided by keda-controller"
+  type        = object({ name = string, endpoint = string })
+  nullable    = true
+  default     = null
+}
+
 # ---------------------------------------------------------------------------
 # Grafana dashboard endpoints (grafana_dashboard) provided by the observed charms
 # ---------------------------------------------------------------------------
@@ -93,6 +100,13 @@ variable "kserve_llmisvc_logging" {
 
 variable "lws_controller_logging" {
   description = "logging (loki_push_api) required by lws-controller"
+  type        = object({ name = string, endpoint = string })
+  nullable    = true
+  default     = null
+}
+
+variable "keda_controller_logging" {
+  description = "logging (loki_push_api) required by keda-controller"
   type        = object({ name = string, endpoint = string })
   nullable    = true
   default     = null
