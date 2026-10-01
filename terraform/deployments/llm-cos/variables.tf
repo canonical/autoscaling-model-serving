@@ -2,9 +2,23 @@
 # See LICENSE file for licensing details.
 
 variable "model_uuid" {
-  description = "UUID of the pre-created Juju model to deploy the LLM serving stack into"
+  description = "UUID of an existing Juju model to deploy the LLM serving stack into. When null, a new model named var.model_name is created."
   type        = string
-  nullable    = false
+  nullable    = true
+  default     = null
+}
+
+variable "model_name" {
+  description = "Name of the Juju model to create for the LLM serving stack when model_uuid is not provided"
+  type        = string
+  default     = "kserve-llm"
+}
+
+variable "cloud" {
+  description = "Kubernetes cloud to create the LLM model on when model_uuid is not provided. Null uses Juju's default cloud."
+  type        = string
+  nullable    = true
+  default     = null
 }
 
 variable "create_cos_model" {
