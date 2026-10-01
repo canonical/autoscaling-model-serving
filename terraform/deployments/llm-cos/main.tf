@@ -20,8 +20,11 @@ module "cos" {
 module "llm" {
   source = "../../products/llm"
 
-  create_model = false
+  # Create the LLM model when the caller does not supply an existing one.
+  create_model = var.model_uuid == null
+  model_name   = var.model_name
   model_uuid   = var.model_uuid
+  cloud        = var.cloud
 
   enable_observability = true
   dashboards_offer     = module.cos.offers.grafana_dashboards.url
