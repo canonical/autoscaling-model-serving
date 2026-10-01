@@ -8,7 +8,7 @@ Kubeflow Solutions, and is used by the integration suite's `llm-cos` scenario.
 
 The LLM serving stack is deployed into the model referenced by `model_uuid`.
 When `model_uuid` is omitted, this module creates a new model named
-`model_name` for the stack. The `cos` model is always created by this module
+`var.model_name` for the stack. The `cos` model is always created by this module
 (unless an existing one is supplied via `cos_model_uuid`).
 
 ## Inputs
