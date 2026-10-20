@@ -44,25 +44,25 @@ variable "self_signed_certificates_channel" {
 variable "kserve_controller_channel" {
   description = "Charm channel for kserve-controller"
   type        = string
-  default     = "latest/edge"
+  default     = "0.17/candidate"
 }
 
 variable "kserve_llmisvc_channel" {
   description = "Charm channel for kserve-llmisvc"
   type        = string
-  default     = "latest/edge"
+  default     = "0.17/candidate"
 }
 
 variable "lws_controller_channel" {
   description = "Charm channel for lws-controller"
   type        = string
-  default     = "latest/edge"
+  default     = "0.7/candidate"
 }
 
 variable "keda_controller_channel" {
   description = "Charm channel for keda-controller"
   type        = string
-  default     = "latest/edge"
+  default     = "2.17/candidate"
 }
 
 # --- Per-charm revision overrides ------------------------------------------

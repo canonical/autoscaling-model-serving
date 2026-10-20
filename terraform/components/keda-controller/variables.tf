@@ -11,7 +11,7 @@ variable "keda_controller" {
   description = "Configuration for the keda-controller application"
   type = object({
     app_name    = optional(string, "keda-controller")
-    channel     = optional(string, "latest/edge")
+    channel     = optional(string, "2.17/candidate")
     revision    = optional(number)
     units       = optional(number, 1)
     trust       = optional(bool, true)

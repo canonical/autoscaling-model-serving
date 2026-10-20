@@ -69,7 +69,7 @@ gateway namespace).
 | `model_uuid` | `string` | `null` | Existing model UUID when `create_model = false`. |
 | `cloud` | `string` | `null` | Kubernetes cloud to create the model on. |
 | `istio_default_gateway` | `string` | `"kserve-gateway"` | Istio gateway name shared with Knative. |
-| `*_channel` | `string` | see defaults | Per-charm channels: `istio_channel` `1.28/stable`, `istio_k8s_channel` `2/stable`, `knative_channel` `1.16/stable`, `kserve_channel` `latest/edge`. |
+| `*_channel` | `string` | see defaults | Per-charm channels: `istio_channel` `1.28/stable`, `istio_k8s_channel` `2/stable`, `knative_channel` `1.16/stable`, `kserve_channel` `0.17/candidate`. |
 | `*_revision` | `number` | `null` | Optional per-charm revision pins. |
 | `kserve_controller_config` | `map(string)` | `{}` | Extra kserve-controller config merged over defaults. |
 
