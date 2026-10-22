@@ -11,7 +11,7 @@ variable "kserve_controller" {
   description = "Configuration for the kserve-controller application. deployment-mode is always forced to standard (this component ships no Knative)."
   type = object({
     app_name    = optional(string, "kserve-controller")
-    channel     = optional(string, "latest/edge")
+    channel     = optional(string, "0.17/candidate")
     revision    = optional(number)
     units       = optional(number, 1)
     trust       = optional(bool, true)
@@ -26,7 +26,7 @@ variable "kserve_llmisvc" {
   description = "Configuration for the kserve-llmisvc application"
   type = object({
     app_name    = optional(string, "kserve-llmisvc")
-    channel     = optional(string, "latest/edge")
+    channel     = optional(string, "0.17/candidate")
     revision    = optional(number)
     units       = optional(number, 1)
     trust       = optional(bool, true)

@@ -67,7 +67,7 @@ variable "knative_channel" {
 variable "kserve_channel" {
   description = "Charm channel for kserve-controller"
   type        = string
-  default     = "latest/edge"
+  default     = "0.17/candidate"
 }
 
 # --- Per-charm revision overrides ------------------------------------------

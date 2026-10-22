@@ -76,7 +76,7 @@ To deploy into an existing model, set `create_model = false` and provide
 | `model_name` | `string` | `"kserve-llm"` | Model name when creating a model. |
 | `model_uuid` | `string` | `null` | Existing model UUID when `create_model = false`. |
 | `cloud` | `string` | `null` | Kubernetes cloud to create the model on. |
-| `*_channel` | `string` | see defaults | Per-charm channels: `envoy_channel` `latest/edge`, `self_signed_certificates_channel` `latest/stable`, `kserve_controller_channel` `latest/edge`, `kserve_llmisvc_channel` `latest/edge`, `lws_controller_channel` `latest/edge`, `keda_controller_channel` `latest/edge`. |
+| `*_channel` | `string` | see defaults | Per-charm channels: `envoy_channel` `latest/edge`, `self_signed_certificates_channel` `latest/stable`, `kserve_controller_channel` `0.17/candidate`, `kserve_llmisvc_channel` `0.17/candidate`, `lws_controller_channel` `0.7/candidate`, `keda_controller_channel` `2.17/candidate`. |
 | `*_revision` | `number` | `null` | Optional per-charm revision pins. |
 | `kserve_controller_config` | `map(string)` | `{}` | Extra kserve-controller config merged over defaults. |
 | `keda_controller_config` | `map(string)` | `{}` | Extra keda-controller config. |

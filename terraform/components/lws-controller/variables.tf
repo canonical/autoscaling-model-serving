@@ -11,7 +11,7 @@ variable "lws_controller" {
   description = "Configuration for the lws-controller application"
   type = object({
     app_name    = optional(string, "lws-controller")
-    channel     = optional(string, "latest/edge")
+    channel     = optional(string, "0.7/candidate")
     revision    = optional(number)
     units       = optional(number, 1)
     trust       = optional(bool, true)
